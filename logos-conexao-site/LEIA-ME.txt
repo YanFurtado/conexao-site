@@ -1,0 +1,9 @@
+LOGOS DO SITE DA CONEXÃO
+
+1-originais-do-drive      -> arquivos originais encontrados no Google Drive (12 clientes)
+2-versao-usada-no-site    -> as 16 logos como aparecem no site: monocromáticas, fundo transparente (PNG)
+                             (inclui Fiolaser, Itaipava, Bellife e Bolos de Ton, enviadas no chat)
+3-marcas-conexao-nex-sirify -> logo e símbolo da Conexão, NEX (oficial do Drive) e SiriFY
+
+No pacote do site, as mesmas logos ficam em conexao-site/assets/logos (formato WebP, mais leve).
+Para trocar uma logo no site: salve o novo arquivo com o MESMO nome em assets/logos (em .webp).

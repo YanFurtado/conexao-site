@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="720" viewBox="0 0 2000 720" role="img" aria-label="NEX logo branca">
+  <title>NEX | Marca branca</title>
+  <g fill="#FFFFFF">
+    <!-- N angular -->
+    <path d="M90 120 H205 Q245 120 276 150 L595 472 L595 620 L190 214 L190 485 L90 585 Z"/>
+    <!-- E superior -->
+    <path d="M650 218 Q650 120 750 120 H1090 L1190 218 Z"/>
+    <!-- E central -->
+    <path d="M700 286 H1140 L1060 377 H800 Z"/>
+    <!-- E inferior -->
+    <path d="M690 310 L795 413 V455 Q795 475 820 475 H1235 L1130 580 H775 Q690 580 690 495 Z"/>
+    <!-- X left upper arm -->
+    <path d="M1190 120 H1345 Q1360 120 1375 136 L1540 310 L1440 405 Z"/>
+    <!-- X main diagonal -->
+    <path d="M1850 35 L1710 120 H1905 L1655 367 L1910 580 H1735 L1545 405 L1180 685 L1450 377 Z"/>
+  </g>
+</svg>

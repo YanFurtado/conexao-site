@@ -1,0 +1,16 @@
+{
+  "name": "conexao-site",
+  "private": true,
+  "description": "Ferramentas de desenvolvimento do site da Conexão. O site em si é HTML estático e não usa nada daqui.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "i18n": "node tests/i18n.test.mjs",
+    "fotos": "node tools/fotos.mjs"
+  },
+  "devDependencies": {
+    "parse5": "^7.3.0",
+    "puppeteer-core": "^25.16.0",
+    "typescript": "^5.9.3"
+  }
+}

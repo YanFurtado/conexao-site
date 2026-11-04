@@ -1,0 +1,11 @@
+# Entra na imagem só o que o site publicado usa. Todo o resto (node_modules, tests, tools, fotos,
+# package.json, .git, .htaccess, logos de trabalho) fica de fora.
+# Página ou pasta nova na raiz do site? Acrescente aqui (npm test avisa se faltar).
+*
+!*.html
+!assets
+!.well-known
+!favicon.ico
+!robots.txt
+!sitemap.xml
+!nginx.conf

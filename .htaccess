@@ -21,7 +21,13 @@ ServerSignature Off
   # 3) Bloqueia arquivos ocultos (.git, .env etc.), exceto .well-known
   RewriteRule "(^|/)\.(?!well-known/)" - [F]
 
-  # 4) URLs limpas: /privacidade e /termos
+  # 4) Bloqueia as ferramentas de desenvolvimento, caso subam junto com o site
+  RewriteRule ^(node_modules|tests|tools|fotos)(/|$) - [F]
+
+  # 5) Versões em outros idiomas: /en/ vira /en (com a barra no fim, os caminhos relativos quebram)
+  RewriteRule ^(en|es|pt-pt)/$ /$1 [R=301,L]
+
+  # 6) URLs limpas: /privacidade, /termos, /en, /es e /pt-pt
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}.html -f
@@ -29,7 +35,10 @@ ServerSignature Off
 </IfModule>
 
 # Bloqueia arquivos sensíveis ou de trabalho
-<FilesMatch "\.(bak|old|orig|log|sql|sh|py|ini|env|md|zip)$">
+<FilesMatch "\.(bak|old|orig|log|sql|sh|py|ini|env|md|zip|mjs)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^package(-lock)?\.json$">
   Require all denied
 </FilesMatch>
 
@@ -43,8 +52,8 @@ ServerSignature Off
   Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
   Header unset X-Powered-By
 
-  # Cache: HTML sempre atualizado; imagens e ícones por 30 dias
-  <FilesMatch "\.(html)$">
+  # Cache: HTML e JS (inclui as traduções) sempre atualizados; imagens e ícones por 30 dias
+  <FilesMatch "\.(html|js)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
   <FilesMatch "\.(webp|png|jpg|jpeg|svg|ico)$">

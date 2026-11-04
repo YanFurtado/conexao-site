@@ -1,18 +1,21 @@
-// Abre o site num Chrome sem janela e tira fotos de cada idioma.
+// Abre o site num Chrome sem janela, tira fotos de cada idioma e confere o comportamento da tradução.
 //
 //   node tools/fotos.mjs --antes --saida <pasta>   guarda a versão atual em pt-BR (antes de mudar algo)
-//   node tools/fotos.mjs --saida <pasta>           fotografa todos os idiomas, confere o seletor e a
-//                                                   detecção de idioma e compara o pt-BR com o "antes"
+//   node tools/fotos.mjs --saida <pasta>           fotografa todos os idiomas, confere seletor, aviso de idioma
+//                                                   e redirecionamento, e compara o pt-BR com o "antes"
+//   --raiz <pasta>                                  serve outra cópia do site (ex.: uma versão antiga)
 //
+// O servidor (tools/servidor.mjs) imita o .htaccess: /en serve en.html e o que não existe recebe a 404.html.
 // O Chrome é procurado nos caminhos padrão; para usar outro, defina CHROME_PATH.
-import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
+import { criarServidor } from './servidor.mjs';
 
-const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const IDIOMAS = ['pt-BR', 'pt-PT', 'en-US', 'es-ES'];
+const argsRaiz = process.argv.indexOf('--raiz');
+const RAIZ = argsRaiz >= 0 ? path.resolve(process.argv[argsRaiz + 1]) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PAGINAS = { 'pt-BR': '/', 'pt-PT': '/pt-pt', 'en-US': '/en', 'es-ES': '/es' };
 const CHAVE_STORE = 'cnx-idioma';
 const TELAS = {
   desktop: { width: 1440, height: 900 },
@@ -42,71 +45,82 @@ function acharChrome() {
   return achado;
 }
 
-const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.ico': 'image/x-icon', '.svg': 'image/svg+xml', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml' };
-
 function servidor() {
   return new Promise((resolve) => {
-    const srv = http.createServer((req, res) => {
-      let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
-      if (p.endsWith('/')) p += 'index.html';
-      const arq = path.join(RAIZ, p);
-      const dentro = arq.startsWith(RAIZ + path.sep);
-      if (dentro && fs.existsSync(arq) && fs.statSync(arq).isFile()) {
-        res.writeHead(200, { 'Content-Type': TIPOS[path.extname(arq)] || 'application/octet-stream' });
-        fs.createReadStream(arq).pipe(res);
-      } else {
-        res.writeHead(404, { 'Content-Type': TIPOS['.html'] });
-        fs.createReadStream(path.join(RAIZ, '404.html')).pipe(res);
-      }
-    });
+    const srv = criarServidor(RAIZ);
     srv.listen(0, '127.0.0.1', () => resolve(srv));
   });
 }
 
-// HTML da página sem scripts, sem o seletor de idioma e sem os atributos de marcação da tradução.
+// HTML da página sem scripts, CSS, comentários, seletor e aviso de idioma, links hreflang, atributos de
+// marcação da tradução e espaços entre as tags: o que sobra é o conteúdo que o visitante vê.
 function domNormalizado() {
   const doc = document.documentElement.cloneNode(true);
-  doc.querySelectorAll('script, #lang').forEach((n) => n.remove());
+  doc.querySelectorAll('script, style, #lang, .lang-aviso, link[rel="alternate"]').forEach((n) => n.remove());
+  const w = document.createTreeWalker(doc, NodeFilter.SHOW_COMMENT), comentarios = [];
+  while (w.nextNode()) comentarios.push(w.currentNode);
+  comentarios.forEach((c) => c.remove());
   doc.querySelectorAll('*').forEach((el) => {
     Array.from(el.attributes).forEach((a) => { if (a.name.startsWith('data-i18n')) el.removeAttribute(a.name); });
   });
-  return doc.outerHTML;
+  return doc.outerHTML.replace(/>\s+</g, '><');
 }
 
-async function abrir(browser, url, { tela, idioma, linguas, prepara }) {
+// idioma: o que fica gravado como escolha (null = nenhuma escolha). linguas: idiomas do navegador.
+async function abrir(browser, url, { tela = 'desktop', idioma = null, linguas = null, prepara = null } = {}) {
   const page = await browser.newPage();
   const erros = [];
   page.on('pageerror', (e) => erros.push(String(e)));
-  page.on('console', (m) => { if (m.type() === 'error') erros.push(m.text()); });
+  // A própria página 404 responde com status 404; isso não é erro.
+  page.on('console', (m) => { if (m.type() === 'error' && m.location().url !== page.url()) erros.push(m.text()); });
   await page.setViewport(TELAS[tela]);
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+  // A escolha é gravada só na primeira abertura da aba, para não desfazer o que o teste clicar depois.
   await page.evaluateOnNewDocument((chave, idioma, linguas) => {
-    try { if (idioma) localStorage.setItem(chave, idioma); else localStorage.removeItem(chave); } catch (e) {}
+    try {
+      if (!sessionStorage.getItem('fotos-pronto')) {
+        if (idioma) localStorage.setItem(chave, idioma); else localStorage.removeItem(chave);
+        sessionStorage.setItem('fotos-pronto', '1');
+      }
+    } catch (e) {}
     if (linguas) Object.defineProperty(navigator, 'languages', { get: () => linguas });
-  }, CHAVE_STORE, idioma || null, linguas || null);
+  }, CHAVE_STORE, idioma, linguas);
   if (prepara) await page.evaluateOnNewDocument(prepara);
   await page.goto(url, { waitUntil: 'networkidle0' });
-  await page.addStyleTag({ content: CSS_CONGELA });
-  await page.evaluate(() => document.fonts.ready);
-  await new Promise((r) => setTimeout(r, 300));
   return { page, erros };
 }
+async function congelar(page) {
+  await page.addStyleTag({ content: CSS_CONGELA });
+  // As bolinhas do diagrama do método são animação SVG (SMIL), que o CSS não para.
+  await page.evaluate(() => document.querySelectorAll('svg').forEach((s) => { if (s.pauseAnimations) { s.pauseAnimations(); s.setCurrentTime(0); } }));
+  await page.evaluate(() => document.fonts.ready);
+  await new Promise((r) => setTimeout(r, 300));
+}
+const estado = (page) => page.evaluate((chave) => {
+  const aviso = document.querySelector('.lang-aviso');
+  let guardado = null; try { guardado = localStorage.getItem(chave); } catch (e) {}
+  return {
+    caminho: location.pathname,
+    lang: document.documentElement.lang,
+    h1: document.querySelector('h1') ? document.querySelector('h1').getAttribute('aria-label') : null,
+    aviso: aviso ? { lang: aviso.getAttribute('lang'), texto: aviso.innerText.trim(), link: aviso.querySelector('a').getAttribute('href') } : null,
+    guardado,
+    faltando: window.i18n ? window.i18n.faltando.slice() : [],
+  };
+}, CHAVE_STORE);
 
 async function fotografar(browser, base, nome, opts) {
   const { page, erros } = await abrir(browser, base + (opts.caminho || '/'), opts);
+  await congelar(page);
   const arq = path.join(SAIDA, `${nome}.png`);
   await page.screenshot({ path: arq, fullPage: true });
-  const info = await page.evaluate(() => ({
-    lang: document.documentElement.lang,
-    titulo: document.title,
-    faltando: window.i18n ? window.i18n.faltando.slice() : [],
-  }));
+  const info = await estado(page);
   const dom = await page.evaluate(domNormalizado);
   await page.close();
   return { arq, info, dom, erros };
 }
 
-// Compara duas fotos pixel a pixel dentro do Chrome e devolve quantos pixels mudaram e em que faixa da página.
+// Compara duas fotos pixel a pixel dentro do Chrome e devolve as faixas da página que mudaram.
 async function compararFotos(browser, a, b) {
   const page = await browser.newPage();
   const res = await page.evaluate(async (da, db) => {
@@ -114,12 +128,16 @@ async function compararFotos(browser, a, b) {
     const [ia, ib] = await Promise.all([carregar(da), carregar(db)]);
     if (ia.width !== ib.width || ia.height !== ib.height) return { tamanhoDiferente: true, a: [ia.width, ia.height], b: [ib.width, ib.height] };
     const px = (img) => { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d'); x.drawImage(img, 0, 0); return x.getImageData(0, 0, c.width, c.height).data; };
-    const pa = px(ia), pb = px(ib);
-    let n = 0, y0 = -1, y1 = -1;
+    const pa = px(ia), pb = px(ib), w = ia.width, faixas = [];
+    let n = 0;
     for (let i = 0; i < pa.length; i += 4) {
-      if (pa[i] !== pb[i] || pa[i + 1] !== pb[i + 1] || pa[i + 2] !== pb[i + 2]) { n++; const y = Math.floor(i / 4 / ia.width); if (y0 < 0) y0 = y; y1 = y; }
+      if (pa[i] === pb[i] && pa[i + 1] === pb[i + 1] && pa[i + 2] === pb[i + 2]) continue;
+      n++;
+      const y = Math.floor(i / 4 / w), x = (i / 4) % w, f = faixas[faixas.length - 1];
+      if (f && y - f.y[1] <= 8) { f.y[1] = y; f.x[0] = Math.min(f.x[0], x); f.x[1] = Math.max(f.x[1], x); }
+      else faixas.push({ y: [y, y], x: [x, x] });
     }
-    return { diferentes: n, faixa: n ? [y0, y1] : null, a: [ia.width, ia.height] };
+    return { diferentes: n, faixas, tamanho: [ia.width, ia.height] };
   }, 'data:image/png;base64,' + fs.readFileSync(a).toString('base64'), 'data:image/png;base64,' + fs.readFileSync(b).toString('base64'));
   await page.close();
   return res;
@@ -130,6 +148,7 @@ async function main() {
   const base = `http://127.0.0.1:${srv.address().port}`;
   const browser = await puppeteer.launch({ executablePath: acharChrome(), headless: true, args: ['--lang=pt-BR'] });
   const problemas = [];
+  const confere = (ok, msg) => { if (!ok) problemas.push(msg); };
   try {
     if (ANTES) {
       for (const tela of Object.keys(TELAS)) {
@@ -141,66 +160,104 @@ async function main() {
       return;
     }
 
-    for (const idioma of IDIOMAS) {
+    // Uma foto de cada idioma, no endereço dele (com a escolha já feita, para não aparecer o aviso).
+    for (const [idioma, caminho] of Object.entries(PAGINAS)) {
       for (const tela of Object.keys(TELAS)) {
-        const r = await fotografar(browser, base, `${idioma}-${tela}`, { tela, idioma });
+        const r = await fotografar(browser, base, `${idioma}-${tela}`, { tela, idioma, caminho });
         console.log(`${idioma} (${tela}): ${r.arq}`);
-        if (r.info.lang !== idioma) problemas.push(`${idioma} ${tela}: <html lang> ficou "${r.info.lang}"`);
-        if (r.info.faltando.length) problemas.push(`${idioma} ${tela}: textos sem tradução na página: ${JSON.stringify(r.info.faltando)}`);
-        if (r.erros.length) problemas.push(`${idioma} ${tela}: erros no console: ${r.erros.join(' | ')}`);
+        confere(r.info.lang === idioma && r.info.caminho === caminho, `${idioma} ${tela}: abriu ${r.info.caminho} com <html lang="${r.info.lang}">`);
+        confere(!r.info.faltando.length, `${idioma} ${tela}: textos sem tradução na página: ${JSON.stringify(r.info.faltando)}`);
+        confere(!r.erros.length, `${idioma} ${tela}: erros no console: ${r.erros.join(' | ')}`);
         if (idioma === 'pt-BR') {
           const domAntes = path.join(SAIDA, `antes-dom-${tela}.html`);
-          const fotoAntes = path.join(SAIDA, `antes-pt-BR-${tela}.png`);
           if (fs.existsSync(domAntes)) {
             const igual = fs.readFileSync(domAntes, 'utf8') === r.dom;
             console.log(`  pt-BR x antes, HTML da página (${tela}): ${igual ? 'idêntico' : 'DIFERENTE'}`);
             if (!igual) { fs.writeFileSync(path.join(SAIDA, `depois-dom-${tela}.html`), r.dom); problemas.push(`pt-BR ${tela}: o HTML da página mudou (veja depois-dom-${tela}.html)`); }
-            const cmp = await compararFotos(browser, fotoAntes, r.arq);
-            console.log(`  pt-BR x antes, foto (${tela}): ${JSON.stringify(cmp)}`);
+            console.log(`  pt-BR x antes, foto (${tela}): ${JSON.stringify(await compararFotos(browser, path.join(SAIDA, `antes-pt-BR-${tela}.png`), r.arq))}`);
           }
         }
       }
       const r404 = await fotografar(browser, base, `${idioma}-404`, { tela: 'mobile', idioma, caminho: '/nao-existe' });
       console.log(`${idioma} (404): ${r404.arq}`);
-      if (r404.info.faltando.length) problemas.push(`${idioma} 404: textos sem tradução: ${JSON.stringify(r404.info.faltando)}`);
-      if (r404.erros.length) problemas.push(`${idioma} 404: erros no console: ${r404.erros.join(' | ')}`);
+      confere(r404.info.lang === idioma, `${idioma} 404: <html lang="${r404.info.lang}">`);
+      confere(!r404.info.faltando.length, `${idioma} 404: textos sem tradução: ${JSON.stringify(r404.info.faltando)}`);
+      confere(!r404.erros.length, `${idioma} 404: erros no console: ${r404.erros.join(' | ')}`);
     }
 
-    // Primeira visita: o idioma vem do navegador.
-    const casos = [[['pt-BR'], 'pt-BR'], [['pt'], 'pt-BR'], [['pt-PT'], 'pt-PT'], [['en-GB', 'en'], 'en-US'], [['es-MX'], 'es-ES'], [['fr-FR'], 'pt-BR'], [['de-DE', 'es-ES'], 'es-ES']];
-    for (const [linguas, esperado] of casos) {
-      const { page, erros } = await abrir(browser, base + '/', { tela: 'desktop', linguas });
-      const lang = await page.evaluate(() => window.i18n.lang);
+    // Primeira visita: a página fica no idioma do endereço e, se o navegador for de outro idioma, aparece o aviso.
+    const casos = [
+      ['/', ['pt-BR'], null], ['/', ['pt'], null], ['/', ['fr-FR'], null],
+      ['/', ['en-GB', 'en'], 'en-US'], ['/', ['es-MX'], 'es-ES'], ['/', ['pt-PT'], 'pt-PT'], ['/', ['de-DE', 'es-ES'], 'es-ES'],
+      ['/en', ['pt-BR'], 'pt-BR'], ['/en', ['en-US'], null], ['/en', ['fr-FR'], null],
+    ];
+    for (const [caminho, linguas, sugerido] of casos) {
+      const { page, erros } = await abrir(browser, base + caminho, { linguas });
+      const e = await estado(page);
       await page.close();
-      console.log(`detecção ${JSON.stringify(linguas)} → ${lang}`);
-      if (lang !== esperado) problemas.push(`detecção ${JSON.stringify(linguas)}: esperado ${esperado}, veio ${lang}`);
-      if (erros.length) problemas.push(`detecção ${JSON.stringify(linguas)}: erros: ${erros.join(' | ')}`);
+      const idiomaDaPagina = Object.keys(PAGINAS).find((l) => PAGINAS[l] === caminho);
+      console.log(`1ª visita ${caminho} com navegador ${JSON.stringify(linguas)} → página ${e.lang}, aviso: ${e.aviso ? `${e.aviso.lang} "${e.aviso.texto}" → ${e.aviso.link}` : 'nenhum'}`);
+      confere(e.lang === idiomaDaPagina && e.caminho === caminho, `1ª visita ${caminho} ${JSON.stringify(linguas)}: a página mudou de idioma (${e.caminho}, ${e.lang})`);
+      confere((e.aviso ? e.aviso.lang : null) === sugerido, `1ª visita ${caminho} ${JSON.stringify(linguas)}: aviso esperado ${sugerido}, veio ${e.aviso && e.aviso.lang}`);
+      confere(!erros.length, `1ª visita ${caminho}: erros: ${erros.join(' | ')}`);
     }
 
-    // Storage bloqueado: a página precisa abrir normalmente e o seletor troca o idioma pelo endereço.
+    // Foto do aviso, e clicar nele leva para o idioma e guarda a escolha.
     {
-      const bloqueia = () => { Object.defineProperty(window, 'localStorage', { get() { throw new Error('bloqueado'); } }); };
-      const { page, erros } = await abrir(browser, base + '/', { tela: 'desktop', linguas: ['pt-BR'], prepara: bloqueia });
-      await page.click('#langBtn');
-      await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.click('#langMenu [data-lang="es-ES"]')]);
-      const r = await page.evaluate(() => ({ lang: window.i18n.lang, url: location.search }));
+      const { page, erros } = await abrir(browser, base + '/', { tela: 'mobile', linguas: ['en-US'] });
+      await congelar(page);
+      await page.screenshot({ path: path.join(SAIDA, 'aviso-idioma-mobile.png') });
+      await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.click('.lang-aviso a')]);
+      const e = await estado(page);
       await page.close();
-      console.log(`storage bloqueado → ${JSON.stringify(r)}`);
-      if (r.lang !== 'es-ES') problemas.push(`storage bloqueado: o seletor não trocou o idioma (${JSON.stringify(r)})`);
-      if (erros.length) problemas.push(`storage bloqueado: erros: ${erros.join(' | ')}`);
+      console.log(`clique no aviso → ${e.caminho} (${e.lang}), guardado: ${e.guardado}`);
+      confere(e.caminho === '/en' && e.lang === 'en-US' && e.guardado === 'en-US', `clique no aviso: ${JSON.stringify(e)}`);
+      confere(!erros.length, `clique no aviso: erros: ${erros.join(' | ')}`);
     }
-
-    // Seletor: escolher English recarrega em inglês e guarda a escolha.
+    // Fechar o aviso guarda o idioma da página e ele não volta.
+    {
+      const { page, erros } = await abrir(browser, base + '/', { linguas: ['en-US'] });
+      await page.click('.lang-aviso button');
+      await page.reload({ waitUntil: 'networkidle0' });
+      const e = await estado(page);
+      await page.close();
+      console.log(`fechar o aviso → aviso depois de recarregar: ${e.aviso ? 'sim' : 'não'}, guardado: ${e.guardado}`);
+      confere(!e.aviso && e.guardado === 'pt-BR' && e.lang === 'pt-BR', `fechar o aviso: ${JSON.stringify(e)}`);
+      confere(!erros.length, `fechar o aviso: erros: ${erros.join(' | ')}`);
+    }
+    // Quem já escolheu outro idioma e abre a página principal vai direto para ele.
+    {
+      const { page, erros } = await abrir(browser, base + '/', { idioma: 'es-ES' });
+      const e = await estado(page);
+      await page.close();
+      console.log(`escolha guardada es-ES abrindo / → ${e.caminho} (${e.lang})`);
+      confere(e.caminho === '/es' && e.lang === 'es-ES', `redirecionamento pela escolha: ${JSON.stringify(e)}`);
+      confere(!erros.length, `redirecionamento: erros: ${erros.join(' | ')}`);
+    }
+    // Seletor: escolher English leva para /en e guarda a escolha.
     {
       const { page, erros } = await abrir(browser, base + '/', { tela: 'mobile', idioma: 'pt-BR' });
+      await congelar(page);
       await page.click('#langBtn');
       await page.screenshot({ path: path.join(SAIDA, 'seletor-aberto-mobile.png') });
       await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.click('#langMenu [data-lang="en-US"]')]);
-      const r = await page.evaluate((chave) => ({ lang: window.i18n.lang, guardado: localStorage.getItem(chave), h1: document.querySelector('h1').getAttribute('aria-label') }), CHAVE_STORE);
+      const e = await estado(page);
       await page.close();
-      console.log(`seletor → ${JSON.stringify(r)}`);
-      if (r.lang !== 'en-US' || r.guardado !== 'en-US') problemas.push(`seletor: ${JSON.stringify(r)}`);
-      if (erros.length) problemas.push(`seletor: erros: ${erros.join(' | ')}`);
+      console.log(`seletor → ${e.caminho} (${e.lang}), guardado: ${e.guardado}`);
+      confere(e.caminho === '/en' && e.lang === 'en-US' && e.guardado === 'en-US', `seletor: ${JSON.stringify(e)}`);
+      confere(!erros.length, `seletor: erros: ${erros.join(' | ')}`);
+    }
+    // Storage bloqueado: a página abre normalmente e o seletor ainda troca de idioma.
+    {
+      const bloqueia = () => { Object.defineProperty(window, 'localStorage', { get() { throw new Error('bloqueado'); } }); };
+      const { page, erros } = await abrir(browser, base + '/', { linguas: ['pt-BR'], prepara: bloqueia });
+      await page.click('#langBtn');
+      await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.click('#langMenu [data-lang="es-ES"]')]);
+      const e = await estado(page);
+      await page.close();
+      console.log(`storage bloqueado → ${e.caminho} (${e.lang})`);
+      confere(e.caminho === '/es' && e.lang === 'es-ES', `storage bloqueado: ${JSON.stringify(e)}`);
+      confere(!erros.length, `storage bloqueado: erros: ${erros.join(' | ')}`);
     }
   } finally {
     await browser.close();

@@ -9,17 +9,23 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
 <meta name="theme-color" content="#0E0B14">
 <meta name="description" data-i18n-attr="content" content="Assessoria consultiva de marketing e tecnologia em Petrolina-PE. O método Super Estrutura Conexão estrutura branding, conversão, comercial, e-commerce e tecnologia da sua empresa.">
-<meta property="og:title" content="Conexão | Assessoria consultiva de marketing e tecnologia">
-<meta property="og:description" content="Aumentamos o faturamento da sua empresa com o nosso método #SuperestruturasCNX. Assessoria consultiva de marketing e tecnologia em Petrolina-PE.">
+<meta property="og:title" data-i18n-attr="content" content="Conexão | Assessoria consultiva de marketing e tecnologia">
+<meta property="og:description" data-i18n-attr="content" content="Aumentamos o faturamento da sua empresa com o nosso método #SuperestruturasCNX. Assessoria consultiva de marketing e tecnologia em Petrolina-PE.">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://SEU-DOMINIO.com.br/">
+<!-- Versões em outros idiomas (geradas por tools/gerar-idiomas.mjs: npm run idiomas) -->
+<link rel="alternate" hreflang="pt-BR" href="https://SEU-DOMINIO.com.br/">
+<link rel="alternate" hreflang="pt-PT" href="https://SEU-DOMINIO.com.br/pt-pt">
+<link rel="alternate" hreflang="en" href="https://SEU-DOMINIO.com.br/en">
+<link rel="alternate" hreflang="es" href="https://SEU-DOMINIO.com.br/es">
+<link rel="alternate" hreflang="x-default" href="https://SEU-DOMINIO.com.br/">
 <link rel="icon" href="favicon.ico" sizes="any">
 <meta property="og:url" content="https://SEU-DOMINIO.com.br/">
 <meta property="og:site_name" content="Conexão Assessoria">
 <meta property="og:image" content="https://SEU-DOMINIO.com.br/assets/img/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Conexão Assessoria · método #SuperestruturasCNX">
+<meta property="og:image:alt" data-i18n-attr="content" content="Conexão Assessoria · método #SuperestruturasCNX">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://SEU-DOMINIO.com.br/assets/img/og-image.jpg">
 <meta name="robots" content="index,follow">
@@ -116,10 +122,17 @@ section[id]{scroll-margin-top:68px}
 .lang-btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--line-dark);background:transparent;color:var(--white);font:600 13px var(--f-body);letter-spacing:.04em;cursor:pointer;transition:border-color .25s}
 .lang-btn:hover,.lang-btn[aria-expanded="true"]{border-color:var(--purple-soft)}
 .lang-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:60;min-width:220px;margin:0;padding:6px;list-style:none;background:var(--ink-2);border:1px solid var(--line-dark);border-radius:12px;box-shadow:0 18px 40px -16px rgba(0,0,0,.7)}
-.lang-menu button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 12px;border:0;border-radius:8px;background:transparent;color:var(--on-ink);font:500 14px var(--f-body);text-align:left;cursor:pointer}
-.lang-menu button:hover{background:rgba(255,255,255,.06);color:var(--white)}
-.lang-menu button[aria-current="true"]{color:var(--white);font-weight:700}
-.lang-menu button[aria-current="true"]::after{content:"";margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--purple-soft)}
+.lang-menu a{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border-radius:8px;color:var(--on-ink);font:500 14px var(--f-body);text-decoration:none}
+.lang-menu a:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.lang-menu a[aria-current="true"]{color:var(--white);font-weight:700}
+.lang-menu a[aria-current="true"]::after{content:"";margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--purple-soft)}
+.lang-aviso{background:var(--ink-2);color:var(--on-ink);border-bottom:1px solid var(--line-dark);font-size:14px;line-height:1.45}
+.lang-aviso .wrap{display:flex;align-items:center;gap:12px;min-height:48px;padding-block:8px}
+.lang-aviso .wrap > svg{border-radius:50%;flex:0 0 auto}
+.lang-aviso p{flex:1;min-width:0;margin:0}
+.lang-aviso a{color:var(--purple-soft);font-weight:700;white-space:nowrap}
+.lang-aviso button{flex:0 0 auto;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:8px;background:rgba(255,255,255,.08);color:var(--white);cursor:pointer}
+.lang-aviso button:hover{background:rgba(255,255,255,.16)}
 @media (max-width:1020px){
   .menu-btn{display:inline-flex}
   .nav{position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;background:var(--ink);border-bottom:1px solid var(--line-dark);padding:8px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px));clip-path:inset(0 0 100% 0);transition:clip-path .45s var(--ease);visibility:hidden}
@@ -539,8 +552,8 @@ form{display:flex;flex-direction:column;gap:12px}
 .bub h4{margin:0 0 6px;font-family:var(--f-display);font-size:16px;font-weight:800}
 .bub ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .bub li::marker{color:var(--purple)}
-.bub.bot li,.bub.bot .foot{animation:swapIn .4s var(--ease) both;animation-delay:calc(var(--k,0) * 110ms + 80ms)}
-.bub .foot{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:13.5px;color:var(--muted)}
+.bub.bot li,.bub.bot .nota{animation:swapIn .4s var(--ease) both;animation-delay:calc(var(--k,0) * 110ms + 80ms)}
+.bub .nota{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:13.5px;color:var(--muted)}
 .bub .err{color:var(--muted-2);font-size:13px}
 .acts-row{display:flex;flex-wrap:wrap;gap:8px;padding-left:40px;animation:swapIn .4s var(--ease)}
 .act{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;padding:9px 14px;border-radius:99px;border:1.5px solid var(--purple);color:var(--purple);background:var(--white);text-decoration:none;cursor:pointer;min-height:40px;font-family:var(--f-body);transition:background-color .25s,color .25s}
@@ -1237,7 +1250,7 @@ i18n.pronto(function(){
   function bandeira(l){ return '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">' + BANDEIRAS[l] + '</svg>'; }
   var langBox = document.getElementById('lang');
   langBox.innerHTML = '<button class="lang-btn" id="langBtn" type="button" aria-expanded="false" aria-controls="langMenu" aria-label="' + esc(t('Idioma: {{idioma}}', { idioma: IDIOMA_NOMES[i18n.lang] })) + '">' + bandeira(i18n.lang) + '<span>' + i18n.lang.slice(0, 2).toUpperCase() + '</span></button>' +
-    '<ul class="lang-menu" id="langMenu" hidden>' + i18n.idiomas.map(function(l){ return '<li><button type="button" lang="' + l + '" data-lang="' + l + '"' + (l === i18n.lang ? ' aria-current="true"' : '') + '>' + bandeira(l) + IDIOMA_NOMES[l] + '</button></li>'; }).join('') + '</ul>';
+    '<ul class="lang-menu" id="langMenu" hidden>' + i18n.idiomas.map(function(l){ return '<li><a href="' + esc(i18n.endereco(l)) + '" hreflang="' + l + '" lang="' + l + '" data-lang="' + l + '"' + (l === i18n.lang ? ' aria-current="true"' : '') + '>' + bandeira(l) + IDIOMA_NOMES[l] + '</a></li>'; }).join('') + '</ul>';
   var langBtn = document.getElementById('langBtn'), langMenu = document.getElementById('langMenu');
   function langAbrir(o){ langMenu.hidden = !o; langBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); }
   langBtn.addEventListener('click', function(){
@@ -1245,9 +1258,23 @@ i18n.pronto(function(){
     if (o && nav.classList.contains('open')) { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); menuBtn.setAttribute('aria-label', t('Abrir menu')); }
     langAbrir(o);
   });
-  langMenu.addEventListener('click', function(e){ var b = e.target.closest('[data-lang]'); if (!b) return; var l = b.getAttribute('data-lang'); if (l === i18n.lang) langAbrir(false); else i18n.escolher(l); });
+  langMenu.addEventListener('click', function(e){ var b = e.target.closest('[data-lang]'); if (!b) return; var l = b.getAttribute('data-lang'); if (l === i18n.lang) { e.preventDefault(); langAbrir(false); } else i18n.lembrar(l); });
   document.addEventListener('click', function(e){ if (!langMenu.hidden && !langBox.contains(e.target)) langAbrir(false); });
   langBox.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !langMenu.hidden) { langAbrir(false); langBtn.focus(); } });
+
+  /* ---- aviso de idioma: na 1ª visita, quem tem o navegador em outro idioma vê um convite para trocar.
+     O aviso aparece no idioma sugerido, e cada tradução destas frases fala do próprio idioma. ---- */
+  var AVISO = [tx('Este site também tem uma versão em português do Brasil.'), tx('Ver versão do Brasil'), tx('Fechar aviso')];
+  if (i18n.sugerido) i18n.carregar(i18n.sugerido, function(ok){
+    if (!ok) return;
+    var l = i18n.sugerido, aviso = document.createElement('div');
+    aviso.className = 'lang-aviso'; aviso.setAttribute('lang', l); aviso.setAttribute('data-nosnippet', '');
+    aviso.innerHTML = '<div class="wrap">' + bandeira(l) + '<p>' + esc(i18n.tEm(l, AVISO[0])) + ' <a href="' + esc(i18n.endereco(l)) + '" hreflang="' + l + '">' + esc(i18n.tEm(l, AVISO[1])) + '</a></p>' +
+      '<button type="button" aria-label="' + esc(i18n.tEm(l, AVISO[2])) + '">' + svgIcon('<path d="M18 6 6 18M6 6l12 12"/>', 16) + '</button></div>';
+    aviso.querySelector('a').addEventListener('click', function(){ i18n.lembrar(l); });
+    aviso.querySelector('button').addEventListener('click', function(){ i18n.lembrar(i18n.lang); aviso.remove(); });
+    document.body.insertBefore(aviso, document.querySelector('header.top'));
+  });
 
   /* ---- títulos palavra a palavra ---- */
   document.querySelectorAll('.split').forEach(function(el){
@@ -1542,42 +1569,45 @@ i18n.pronto(function(){
   var ai = document.getElementById('ai'), aiBtn = document.getElementById('aiBtn'), aiLog = document.getElementById('aiLog'), aiSugg = document.getElementById('aiSugg'), aiForm = document.getElementById('aiForm'), aiInput = document.getElementById('aiInput'), aiSend = document.getElementById('aiSend');
   var busy = false, started = false, lastFocusAi = null;
   var AV = '<span class="ai-av" aria-hidden="true">A</span>';
-  function findEst(t){ t = (t || '').toLowerCase(); return ESTRUTURAS.filter(function(e){ return t.indexOf(e.curto.toLowerCase()) >= 0 || (e.id === 'conversao' && /tr[áa]fego|an[úu]ncio|landing/.test(t)) || (e.id === 'comercial' && /vend|script|funil|follow/.test(t)) || (e.id === 'tecnologia' && /\bcrm\b|\bnex\b|automa|intelig[êe]ncia artificial/.test(t)) || (e.id === 'branding' && /\bmarca\b|identidade|logo|posicionamento/.test(t)) || (e.id === 'ecommerce' && /loja|online|e-?commerce/.test(t)); })[0]; }
+  /* As palavras-chave cobrem pt-BR, pt-PT, inglês e espanhol; o que vem depois de cada "|" em inglês/espanhol
+     foi escolhido para não casar com palavras comuns em português. Nas saudações, o fim da palavra é conferido
+     sem \b, porque \b não reconhece letras acentuadas ("olá", "e aí"). */
+  function findEst(t){ t = (t || '').toLowerCase(); return ESTRUTURAS.filter(function(e){ return t.indexOf(e.curto.toLowerCase()) >= 0 || (e.id === 'conversao' && /tr[áa]fego|an[úu]ncio|landing|conversion|conversi[óo]n|traffic|tr[áa]fico|\bads?\b|advertis|campaign/.test(t)) || (e.id === 'comercial' && /vend|script|funil|follow|\bsales?\b|\bsell|funnel|embudo|\bventas?\b|commercial/.test(t)) || (e.id === 'tecnologia' && /\bcrm\b|\bnex\b|automa|intelig[êe]ncia artificial|technology|\btech\b|tecnolog[íi]a|artificial intelligence/.test(t)) || (e.id === 'branding' && /\bmarca\b|identidade|logo|posicionamento|\bbrand\b|identity|identidad|positioning|posicionamiento/.test(t)) || (e.id === 'ecommerce' && /loja|online|e-?commerce|\bstore\b|\bshop\b|tienda/.test(t)); })[0]; }
 
   /* ===== Respostas prontas da AlicIA (roteiro fixo, sem IA) ===== */
   var RESPOSTAS = [
-    { re: /pre[çc]o|valor|invest|custa|quanto|or[çc]amento/, r: { text: 'O investimento depende das estruturas escolhidas e do porte da empresa.', items: ['Primeiro fazemos o diagnóstico', 'Depois apresentamos uma proposta sob medida', 'Não trabalhamos com pacote fechado'], foot: 'Para valores, a equipe responde pelo WhatsApp.', wa: true } },
-    { re: /sirify|gateway|pagamento/, r: { title: 'Sirify', text: 'É o gateway de pagamento que a Conexão está desenvolvendo, para empresas receberem online com mais controle e segurança.', foot: 'Está em desenvolvimento. Quer ser avisado no lançamento?', wa: true } },
-    { re: /\bnex\b|crm pr[óo]prio|sistema da conex/, r: { title: 'NEX Intelligence', text: 'É o CRM desenvolvido pela Conexão, com atendimento, funil de vendas e agentes de IA.', items: ['Organiza contatos e leads do WhatsApp', 'Mostra o funil e as negociações', 'Automatiza atendimento e follow-up'], foot: 'Conheça em crm.nexintelligence.com.br', nex: true } },
-    { re: /diagn[óo]stico/, r: { title: 'Como funciona o diagnóstico', text: 'Analisamos o seu negócio para descobrir qual estrutura está travando o crescimento.', items: ['Conversa para entender o momento da empresa', 'Análise de marca, marketing, comercial e processos', 'Apresentação das prioridades e da proposta'], wa: true } },
-    { re: /m[ée]todo|super estrutura|como funciona|etapa|processo/, r: { title: 'Método Super Estrutura Conexão', text: 'Cinco estruturas trabalhadas como um ecossistema, em 5 etapas:', items: ['Entender o seu negócio', 'Diagnosticar o que trava o crescimento', 'Planejar prioridades e indicadores', 'Estruturar junto com a sua equipe', 'Acompanhar, medir e ajustar'] } },
-    { re: /ag[êe]ncia|diferen[çc]a|por que a conex|diferencial/, r: { text: 'A Conexão não é uma agência: é uma assessoria consultiva de marketing e tecnologia.', items: ['Agência executa pedidos; nós entramos na estrutura do negócio', 'Começamos pelo diagnóstico, sem pacote pronto', 'Marketing conectado às vendas e à tecnologia'] } },
-    { re: /prazo|tempo|quando.*resultado|demora|rapidez/, r: { text: 'O prazo depende das estruturas e do momento da empresa.', items: ['Os primeiros ajustes aparecem já na implantação', 'Os resultados de escala vêm com o acompanhamento contínuo'], foot: 'No diagnóstico, a equipe apresenta o cronograma do seu projeto.', wa: true } },
-    { re: /equipe|participa|meu time|funcion[áa]rio/, r: { text: 'Sim, sua equipe participa. Implantamos tudo junto com o seu time, para os processos funcionarem no dia a dia.' } },
-    { re: /cliente|segmento|nicho|atend(em|e) (que|quais)|empresas/, r: { text: 'Já passaram pela Conexão centenas de empresas, em mais de 15 nichos.', items: ['Gastronomia, varejo e perfumaria', 'Saúde, odontologia e estética', 'Imobiliário, educação e serviços', 'Marcas como Fiolaser, Itaipava, Bellife e Auto Vale'] } },
-    { re: /onde|endere[çc]o|local|petrolina|portugal|eua|estados unidos|fora|online|visita/, r: { text: 'Nossa sede fica na Galeria Manhattan, salas 07 e 12, em Petrolina-PE.', items: ['Atendemos Brasil, Portugal e Estados Unidos', 'Reuniões presenciais com hora marcada ou online'], wa: true } },
-    { re: /contato|whats|telefone|falar com|atendente|humano|pessoa/, r: { text: 'Claro! Nosso time atende pelo WhatsApp +55 87 99130-2323.', wa: true } },
-    { re: /marcos|fundador|ceo|quem (é|e) a conex|hist[óo]ria|anos/, r: { text: 'A Conexão foi fundada por Marcos Leite e tem mais de 10 anos de mercado, com mais de 300 clientes atendidos.', items: ['Começou criando marcas para negócios locais', 'Virou assessoria com time, processos e tecnologia própria'] } },
-    { re: /qual|come[çc]ar|escolher|preciso|primeiro|indica/, r: { text: 'Quem define a prioridade é o diagnóstico: ele mostra qual estrutura está travando o crescimento.', items: ['Cada plano é independente', 'Dá para começar por uma estrutura e conectar as outras depois'], wa: true } },
-    { re: /^(oi|ol[áa]|bom dia|boa tarde|boa noite|e a[íi])\b/, r: { text: 'Oi! Que bom ter você aqui. Posso explicar o método, os 5 planos, o investimento ou como falar com a equipe.' } },
-    { re: /obrigad|valeu|top|show/, r: { text: 'Imagina! Se quiser seguir, o time responde pelo WhatsApp.', wa: true } }
+    { re: /pre[çc]o|valor|invest|custa|quanto|or[çc]amento|price|pricing|\bcosts?\b|\bcost[oe]\b|how much|budget|\bfees?\b|precio|cuesta|cu[áa]nto|presupuesto|inversi[óo]n/, r: { text: t('O investimento depende das estruturas escolhidas e do porte da empresa.'), items: [t('Primeiro fazemos o diagnóstico'), t('Depois apresentamos uma proposta sob medida'), t('Não trabalhamos com pacote fechado')], foot: t('Para valores, a equipe responde pelo WhatsApp.'), wa: true } },
+    { re: /sirify|gateway|pagamento|payment|pasarela/, r: { title: 'Sirify', text: t('É o gateway de pagamento que a Conexão está desenvolvendo, para empresas receberem online com mais controle e segurança.'), foot: t('Está em desenvolvimento. Quer ser avisado no lançamento?'), wa: true } },
+    { re: /\bnex\b|crm pr[óo]prio|sistema da conex|own crm|crm propio/, r: { title: 'NEX Intelligence', text: t('É o CRM desenvolvido pela Conexão, com atendimento, funil de vendas e agentes de IA.'), items: [t('Organiza contatos e leads do WhatsApp'), t('Mostra o funil e as negociações'), t('Automatiza atendimento e follow-up')], foot: t('Conheça em crm.nexintelligence.com.br'), nex: true } },
+    { re: /diagn[óo]stico|diagnos/, r: { title: t('Como funciona o diagnóstico'), text: t('Analisamos o seu negócio para descobrir qual estrutura está travando o crescimento.'), items: [t('Conversa para entender o momento da empresa'), t('Análise de marca, marketing, comercial e processos'), t('Apresentação das prioridades e da proposta')], wa: true } },
+    { re: /m[ée]todo|super estrutura|como funciona|etapa|processo|method|how (does it|do you|it) work|\bsteps?\b|process|c[óo]mo funciona|proceso|\bpasos?\b/, r: { title: t('Método Super Estrutura Conexão'), text: t('Cinco estruturas trabalhadas como um ecossistema, em 5 etapas:'), items: [t('Entender o seu negócio'), t('Diagnosticar o que trava o crescimento'), t('Planejar prioridades e indicadores'), t('Estruturar junto com a sua equipe'), t('Acompanhar, medir e ajustar')] } },
+    { re: /ag[êe]ncia|diferen[çc]a|por que a conex|diferencial|agency|difference|different|why (choose )?conex|diferencia|por qu[ée] (elegir a )?(la )?conex/, r: { text: t('A Conexão não é uma agência: é uma assessoria consultiva de marketing e tecnologia.'), items: [t('Agência executa pedidos; nós entramos na estrutura do negócio'), t('Começamos pelo diagnóstico, sem pacote pronto'), t('Marketing conectado às vendas e à tecnologia')] } },
+    { re: /prazo|tempo|quando.*resultado|demora|rapidez|how long|timeline|timeframe|deadline|when.*results?|plazo|tiempo|cu[áa]ndo.*resultado|tarda/, r: { text: t('O prazo depende das estruturas e do momento da empresa.'), items: [t('Os primeiros ajustes aparecem já na implantação'), t('Os resultados de escala vêm com o acompanhamento contínuo')], foot: t('No diagnóstico, a equipe apresenta o cronograma do seu projeto.'), wa: true } },
+    { re: /equipe|participa|meu time|funcion[áa]rio|\bequipa\b|\bteam\b|staff|employees?|\bequipo\b|empleados?/, r: { text: t('Sim, sua equipe participa. Implantamos tudo junto com o seu time, para os processos funcionarem no dia a dia.') } },
+    { re: /cliente|segmento|nicho|atend(em|e) (que|quais)|empresas|clients?|customers?|niches?|industr(y|ies)|segments?|companies|businesses/, r: { text: t('Já passaram pela Conexão centenas de empresas, em mais de 15 nichos.'), items: [t('Gastronomia, varejo e perfumaria'), t('Saúde, odontologia e estética'), t('Imobiliário, educação e serviços'), t('Marcas como Fiolaser, Itaipava, Bellife e Auto Vale')] } },
+    { re: /onde|endere[çc]o|local|petrolina|portugal|eua|estados unidos|fora|online|visita|morada|where(?!.*\b(start|begin)\b)|address|office|united states|america|abroad|\bvisit|d[óo]nde(?!.*(empie|comien|empez))|direcci[óo]n|ubica|ee\.? ?uu|fuera/, r: { text: t('Nossa sede fica na Galeria Manhattan, salas 07 e 12, em Petrolina-PE.'), items: [t('Atendemos Brasil, Portugal e Estados Unidos'), t('Reuniões presenciais com hora marcada ou online')], wa: true } },
+    { re: /contato|whats|telefone|falar com|atendente|humano|pessoa|contact|phone|\bcall\b|talk to|speak (to|with)|human|\bperson\b|\bpersona\b|tel[ée]fono|telem[óo]vel|hablar con|\bllamar\b/, r: { text: t('Claro! Nosso time atende pelo WhatsApp +55 87 99130-2323.'), wa: true } },
+    { re: /marcos|fundador|ceo|quem (é|e) a conex|hist[óo]ria|anos|founder|who (is|are) (behind )?(the )?conex|who are you|history|\bstory\b|\byears\b|qui[ée]n(es)? (es|son|est[áa])|años/, r: { text: t('A Conexão foi fundada por Marcos Leite e tem mais de 10 anos de mercado, com mais de 300 clientes atendidos.'), items: [t('Começou criando marcas para negócios locais'), t('Virou assessoria com time, processos e tecnologia própria')] } },
+    { re: /qual|come[çc]ar|escolher|preciso|primeiro|indica|which|\bstart|\bbegin|choose|\bneed|\bfirst|recommend|cu[áa]l|empez|empiez|comenz|comienz|elegir|necesit|primero|recomiend/, r: { text: t('Quem define a prioridade é o diagnóstico: ele mostra qual estrutura está travando o crescimento.'), items: [t('Cada plano é independente'), t('Dá para começar por uma estrutura e conectar as outras depois')], wa: true } },
+    { re: /^(oi|ol[áa]|bom dia|boa tarde|boa noite|e a[íi]|hi|hello|hey|good (morning|afternoon|evening)|hola|buen(os|as) (d[íi]as|tardes|noches))(?![a-z0-9_à-ÿ])/, r: { text: t('Oi! Que bom ter você aqui. Posso explicar o método, os 5 planos, o investimento ou como falar com a equipe.') } },
+    { re: /obrigad|valeu|top|show|thank|gracias|cheers/, r: { text: t('Imagina! Se quiser seguir, o time responde pelo WhatsApp.'), wa: true } }
   ];
   function localAnswer(q){
-    var t = q.toLowerCase();
-    var pre = RESPOSTAS.slice(0, 3).filter(function(x){ return x.re.test(t); })[0];
+    var low = q.toLowerCase();
+    var pre = RESPOSTAS.slice(0, 3).filter(function(x){ return x.re.test(low); })[0];
     if (pre) return pre.r;
-    var e = findEst(t);
-    if (e) return { title: e.nome, text: e.desc, items: e.inclui, foot: 'Indicada para: ' + e.paraQuem, est: e };
-    var hit = RESPOSTAS.slice(3).filter(function(x){ return x.re.test(t); })[0];
+    var e = findEst(low);
+    if (e) return { title: t(e.nome), text: t(e.desc), items: e.inclui.map(function(x){ return t(x); }), foot: t('Indicada para: {{publico}}', { publico: t(e.paraQuem) }), est: e };
+    var hit = RESPOSTAS.slice(3).filter(function(x){ return x.re.test(low); })[0];
     if (hit) return hit.r;
-    return { text: 'Ainda não sei responder isso, mas posso te explicar o método, os 5 planos, o investimento ou onde atendemos.', foot: 'Para algo específico, a equipe responde pelo WhatsApp.', wa: true };
+    return { text: t('Ainda não sei responder isso, mas posso te explicar o método, os 5 planos, o investimento ou onde atendemos.'), foot: t('Para algo específico, a equipe responde pelo WhatsApp.'), wa: true };
   }
   function richFromData(d){
     var h = '';
     if (d.title) h += '<h4>' + esc(d.title) + '</h4>';
     if (d.text) h += '<p>' + esc(d.text) + '</p>';
     if (d.items && d.items.length) h += '<ul>' + d.items.map(function(x, k){ return '<li style="--k:' + (k + 1) + '">' + esc(x) + '</li>'; }).join('') + '</ul>';
-    if (d.foot) h += '<p class="foot">' + esc(d.foot) + '</p>';
+    if (d.foot) h += '<p class="nota">' + esc(d.foot) + '</p>';
     return h;
   }
   function richFromText(t){
@@ -1597,52 +1627,56 @@ i18n.pronto(function(){
     r.innerHTML = (who === 'bot' ? AV : '') + '<div class="bub ' + who + '">' + html + '</div>';
     aiLog.appendChild(r); scrollEnd(); return r;
   }
-  function addTyping(){ var r = document.createElement('div'); r.className = 'mrow bot'; r.innerHTML = AV + '<div class="ai-typing" aria-label="AlicIA está digitando"><i></i><i></i><i></i></div>'; aiLog.appendChild(r); scrollEnd(); return r; }
+  function addTyping(){ var r = document.createElement('div'); r.className = 'mrow bot'; r.innerHTML = AV + '<div class="ai-typing" aria-label="' + esc(t('AlicIA está digitando')) + '"><i></i><i></i><i></i></div>'; aiLog.appendChild(r); scrollEnd(); return r; }
   function addActions(est, wa){
     aiLog.querySelectorAll('.acts-row').forEach(function(x){ x.remove(); });
     var r = document.createElement('div'); r.className = 'acts-row';
     if (est) {
-      r.innerHTML = '<a class="act solid" href="' + waHref('Olá! Falei com a AlicIA no site e tenho interesse na ' + est.nome + '.') + '"' + (WHATSAPP ? ' target="_blank" rel="noopener"' : '') + ' data-close>' + svgIcon(WA_ICON, 15) + 'Quero esta estrutura</a>' +
-        '<a class="act" href="#plano-' + est.id + '" data-goplan="' + est.id + '" data-close>Ver o plano</a>';
+      r.innerHTML = '<a class="act solid" href="' + waHref(t('Olá! Falei com a AlicIA no site e tenho interesse na {{estrutura}}.', { estrutura: t(est.nome) })) + '"' + (WHATSAPP ? ' target="_blank" rel="noopener"' : '') + ' data-close>' + svgIcon(WA_ICON, 15) + esc(t('Quero esta estrutura')) + '</a>' +
+        '<a class="act" href="#plano-' + est.id + '" data-goplan="' + est.id + '" data-close>' + esc(t('Ver o plano')) + '</a>';
     } else if (wa) {
-      r.innerHTML = '<a class="act solid" href="' + waHref('Olá! Falei com a AlicIA no site e quero falar com a equipe.') + '"' + (WHATSAPP ? ' target="_blank" rel="noopener"' : '') + ' data-close>' + svgIcon(WA_ICON, 15) + 'Falar com a equipe</a>';
+      r.innerHTML = '<a class="act solid" href="' + waHref(t('Olá! Falei com a AlicIA no site e quero falar com a equipe.')) + '"' + (WHATSAPP ? ' target="_blank" rel="noopener"' : '') + ' data-close>' + svgIcon(WA_ICON, 15) + esc(t('Falar com a equipe')) + '</a>';
     } else return;
     aiLog.appendChild(r); scrollEnd();
   }
+  /* As perguntas prontas são reconhecidas pelo texto em pt-BR; a tradução só aparece na tela */
+  function perguntaEst(e){ return ['O que inclui a ' + e.nome + ' e para quem ela é indicada?', t('O que inclui a {{estrutura}} e para quem ela é indicada?', { estrutura: t(e.nome) })]; }
+  var Q_COMECO = tx('Qual estrutura eu devo contratar primeiro?'), Q_INVEST = tx('Qual é o investimento?'), Q_METODO = tx('Como funciona o método Super Estrutura Conexão?'), Q_FORA = tx('Vocês atendem fora de Petrolina?');
   function renderSugg(){
-    var qs = ESTRUTURAS.map(function(e){ return [e.curto, 'O que inclui a ' + e.nome + ' e para quem ela é indicada?']; }).concat([['Por onde começo?', 'Qual estrutura eu devo contratar primeiro?'], ['Investimento', 'Qual é o investimento?'], ['O método', 'Como funciona o método Super Estrutura Conexão?']]);
-    aiSugg.innerHTML = ''; qs.forEach(function(q){ var b = document.createElement('button'); b.type = 'button'; b.textContent = q[0]; b.addEventListener('click', function(){ ask(q[1]); }); aiSugg.appendChild(b); });
+    var qs = ESTRUTURAS.map(function(e){ return [t(e.curto)].concat(perguntaEst(e)); }).concat([[t('Por onde começo?'), Q_COMECO, t(Q_COMECO)], [t('Investimento'), Q_INVEST, t(Q_INVEST)], [t('O método'), Q_METODO, t(Q_METODO)]]);
+    aiSugg.innerHTML = ''; qs.forEach(function(q){ var b = document.createElement('button'); b.type = 'button'; b.textContent = q[0]; b.addEventListener('click', function(){ ask(q[1], q[2]); }); aiSugg.appendChild(b); });
   }
+  function qbtn(q, rotulo){ return '<button class="qbtn" type="button" data-q="' + esc(q) + '" data-ql="' + esc(t(q)) + '">' + esc(rotulo) + '</button>'; }
   function renderWelcome(){
     started = false; turns = []; aiSugg.hidden = true;
-    aiLog.innerHTML = '<div class="welcome"><span class="ai-av" aria-hidden="true">A</span><h3>Oi! Eu sou a AlicIA.</h3><p>Tiro suas dúvidas sobre o método Super Estrutura Conexão e os 5 planos. Escolha um tema ou escreva sua pergunta.</p>' +
-      '<div class="topics">' + ESTRUTURAS.map(function(e){ return '<button class="topic" type="button" data-q="O que inclui a ' + esc(e.nome) + ' e para quem ela é indicada?"><span class="ti">' + svgIcon(e.icon) + '</span><span><b>' + esc(e.curto) + '</b><span>' + esc(e.desc.split(/[,.]/)[0]) + '</span></span></button>'; }).join('') + '</div>' +
-      '<div class="quick"><button class="qbtn" type="button" data-q="Qual estrutura eu devo contratar primeiro?">Por onde começo?</button><button class="qbtn" type="button" data-q="Qual é o investimento?">Quanto custa?</button><button class="qbtn" type="button" data-q="Como funciona o método Super Estrutura Conexão?">Como funciona o método?</button><button class="qbtn" type="button" data-q="Vocês atendem fora de Petrolina?">Atendem fora de Petrolina?</button></div></div>';
-    aiLog.querySelectorAll('[data-q]').forEach(function(b){ b.addEventListener('click', function(){ ask(b.getAttribute('data-q')); }); });
+    aiLog.innerHTML = '<div class="welcome"><span class="ai-av" aria-hidden="true">A</span><h3>' + esc(t('Oi! Eu sou a AlicIA.')) + '</h3><p>' + esc(t('Tiro suas dúvidas sobre o método Super Estrutura Conexão e os 5 planos. Escolha um tema ou escreva sua pergunta.')) + '</p>' +
+      '<div class="topics">' + ESTRUTURAS.map(function(e){ var pq = perguntaEst(e); return '<button class="topic" type="button" data-q="' + esc(pq[0]) + '" data-ql="' + esc(pq[1]) + '"><span class="ti">' + svgIcon(e.icon) + '</span><span><b>' + esc(t(e.curto)) + '</b><span>' + esc(t(e.desc).split(/[,.]/)[0]) + '</span></span></button>'; }).join('') + '</div>' +
+      '<div class="quick">' + qbtn(Q_COMECO, t('Por onde começo?')) + qbtn(Q_INVEST, t('Quanto custa?')) + qbtn(Q_METODO, t('Como funciona o método?')) + qbtn(Q_FORA, t('Atendem fora de Petrolina?')) + '</div></div>';
+    aiLog.querySelectorAll('[data-q]').forEach(function(b){ b.addEventListener('click', function(){ ask(b.getAttribute('data-q'), b.getAttribute('data-ql')); }); });
   }
   function setBusy(b){ busy = b; aiSend.disabled = b; }
-  function ask(q){
+  function ask(q, mostrar){
     q = (q || '').trim(); if (busy || !q) return;
     if (!started) { started = true; aiLog.innerHTML = ''; renderSugg(); aiSugg.hidden = false; }
     setBusy(true); aiInput.value = '';
-    addRow('me', esc(q));
+    addRow('me', esc(mostrar || q));
     var typingRow = addTyping(), d = localAnswer(q);
     var delay = reduce ? 0 : Math.min(500 + ((d.text || '').length + (d.items || []).join('').length) * 6, 1500);
     setTimeout(function(){
       typingRow.remove();
       addRow('bot', richFromData(d));
-      if (d.nex) { var r = document.createElement('div'); r.className = 'acts-row'; r.innerHTML = '<a class="act solid" href="https://crm.nexintelligence.com.br/" target="_blank" rel="noopener">Conhecer a NEX</a>'; aiLog.querySelectorAll('.acts-row').forEach(function(x){ x.remove(); }); aiLog.appendChild(r); scrollEnd(); }
+      if (d.nex) { var r = document.createElement('div'); r.className = 'acts-row'; r.innerHTML = '<a class="act solid" href="https://crm.nexintelligence.com.br/" target="_blank" rel="noopener">' + esc(t('Conhecer a NEX')) + '</a>'; aiLog.querySelectorAll('.acts-row').forEach(function(x){ x.remove(); }); aiLog.appendChild(r); scrollEnd(); }
       else addActions(d.est, d.wa);
       setBusy(false); if (fine) aiInput.focus();
     }, delay);
   }
   function aiKey(e){ if (e.key === 'Escape') closeAi(); }
-  function openAi(q){
+  function openAi(q, mostrar){
     lastFocusAi = document.activeElement;
     ai.hidden = false; aiBtn.setAttribute('aria-expanded','true'); document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', aiKey);
     if (!started && !aiLog.children.length) renderWelcome();
-    if (q) ask(q); else if (fine) aiInput.focus();
+    if (q) ask(q, mostrar); else if (fine) aiInput.focus();
   }
   function closeAi(){ ai.hidden = true; aiBtn.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; document.removeEventListener('keydown', aiKey); if (lastFocusAi && lastFocusAi.focus) lastFocusAi.focus(); }
   aiBtn.addEventListener('click', function(){ ai.hidden ? openAi() : closeAi(); });
@@ -1654,10 +1688,10 @@ i18n.pronto(function(){
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-ask]'); if (!b) return;
     var est = ESTRUTURAS.filter(function(x){ return x.id === b.getAttribute('data-ask'); })[0];
-    if (est) openAi('O que inclui a ' + est.nome + ' e para quem ela é indicada?');
+    if (est) { var pq = perguntaEst(est); openAi(pq[0], pq[1]); }
   });
   if (location.hash === '#alicia') openAi();
-})();
+});
 </script>
 
 </html>

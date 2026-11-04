@@ -33,6 +33,20 @@
 
 <meta property="og:locale" content="pt_PT">
 <meta name="claude:viewport-fit-sides" content="cover">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1901651080801075');
+fbq('track', 'PageView');
+</script>
+<!-- End Meta Pixel Code -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap">
 <style>
@@ -672,6 +686,11 @@ form{display:flex;flex-direction:column;gap:12px}
 }
 </style>
 
+<!-- Meta Pixel Code (para quem navega sem JavaScript) -->
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1901651080801075&ev=PageView&noscript=1"
+/></noscript>
+
 </head><body><div class="progress" aria-hidden="true"><span id="bar"></span></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 
@@ -1231,6 +1250,21 @@ i18n.pronto(function(){
   });
   if (WHATSAPP) document.getElementById('waText').textContent = '+55 87 99130-2323';
 
+  /* ---- Pixel da Meta: evento Lead ao enviar um formulário ou abrir o WhatsApp ----
+     content_name diz de onde veio ("WhatsApp - planos", "Formulário - topo") e fica igual em todos os
+     idiomas, para os relatórios somarem. Só vai o local do clique; nenhum dado digitado é enviado.
+     Os cliques no WhatsApp contam uma vez por visita à página; "Abrir o WhatsApp" e "toque aqui para
+     enviar", que repetem um formulário já enviado, não contam de novo. */
+  function lead(origem){ if (window.fbq) fbq('track', 'Lead', { content_name: origem }); }
+  var leadWhats = false;
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="https://wa.me/"]');
+    if (!a || leadWhats || a.id === 'sentWa' || a.closest('#heroNote')) return;
+    leadWhats = true;
+    var secao = a.closest('section[id]');
+    lead('WhatsApp - ' + (a.closest('#ai') ? 'alicia' : a.closest('header') ? 'cabecalho' : a.closest('.meter') ? 'teste-rapido' : secao ? secao.id : 'pagina'));
+  });
+
   /* ---- menu ---- */
   var menuBtn = document.getElementById('menuBtn'), nav = document.getElementById('nav');
   menuBtn.addEventListener('click', function(){ var o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); menuBtn.setAttribute('aria-label', o ? t('Fechar menu') : t('Abrir menu')); });
@@ -1517,6 +1551,7 @@ i18n.pronto(function(){
       e.preventDefault();
       var all = true; hf.querySelectorAll('input').forEach(function(el){ if (!hcheck(el)) all = false; });
       if (!all) { var first = hf.querySelector('.err input'); if (first) first.focus(); return; }
+      lead('Formulário - topo');
       var v = function(id){ return document.getElementById(id).value.trim(); };
       var msg = t('Olá! Quero aumentar o faturamento da minha empresa com o método #SuperestruturasCNX.\n\n*Nome:* {{nome}}\n*WhatsApp:* {{whats}}\n*Empresa:* {{empresa}}\n\n(Enviado pelo site da Conexão)', { nome: v('h-nome'), whats: v('h-whats'), empresa: v('h-empresa') });
       var url = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg);
@@ -1552,6 +1587,7 @@ i18n.pronto(function(){
     e.preventDefault();
     var all = true; form.querySelectorAll('[required]').forEach(function(el){ if (!check(el)) all = false; });
     if (!all) { var first = form.querySelector('.err input,.err select'); if (first) first.focus(); return; }
+    lead('Formulário - contato');
     var v = function(id){ return document.getElementById(id).value.trim(); };
     var msg = t('Olá! Quero um diagnóstico da minha empresa.\n\n*Nome:* {{nome}}\n*WhatsApp:* {{whats}}\n*Empresa:* {{empresa}}\n*Estrutura de interesse:* {{estrutura}}\n\n(Enviado pelo site da Conexão)',
       { nome: v('f-nome'), whats: v('f-whats'), empresa: v('f-empresa'), estrutura: v('f-est') });

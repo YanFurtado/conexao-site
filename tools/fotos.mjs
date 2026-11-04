@@ -56,7 +56,7 @@ function servidor() {
 // marcação da tradução e espaços entre as tags: o que sobra é o conteúdo que o visitante vê.
 function domNormalizado() {
   const doc = document.documentElement.cloneNode(true);
-  doc.querySelectorAll('script, style, #lang, .lang-aviso, link[rel="alternate"]').forEach((n) => n.remove());
+  doc.querySelectorAll('script, style, noscript, #lang, .lang-aviso, link[rel="alternate"]').forEach((n) => n.remove());
   const w = document.createTreeWalker(doc, NodeFilter.SHOW_COMMENT), comentarios = [];
   while (w.nextNode()) comentarios.push(w.currentNode);
   comentarios.forEach((c) => c.remove());
@@ -72,7 +72,22 @@ async function abrir(browser, url, { tela = 'desktop', idioma = null, linguas = 
   const erros = [];
   page.on('pageerror', (e) => erros.push(String(e)));
   // A própria página 404 responde com status 404; isso não é erro.
-  page.on('console', (m) => { if (m.type() === 'error' && m.location().url !== page.url()) erros.push(m.text()); });
+  page.on('console', (m) => { if (m.type() === 'error' && !(m.location().url === page.url() && /status of 404/.test(m.text()))) erros.push(m.text()); });
+  // Os envios do Pixel da Meta (www.facebook.com) são anotados e respondidos aqui, sem chegar ao Meta,
+  // para os testes não aparecerem como visitas na conta. O script do pixel (connect.facebook.net) carrega normal.
+  page.eventosMeta = [];
+  await page.setRequestInterception(true);
+  page.on('request', (r) => {
+    if (/^https:\/\/www\.facebook\.com\//.test(r.url())) { page.eventosMeta.push(r.url() + ' ' + (r.postData() || '')); r.respond({ status: 204, body: '' }); }
+    else r.continue();
+  });
+  // O pixel ignora navegadores automatizados ("Bot traffic detected"); para testá-lo, o Chrome de teste se
+  // apresenta como um Chrome comum. Os envios continuam presos acima.
+  await page.setUserAgent((await browser.userAgent()).replace('HeadlessChrome', 'Chrome'));
+  await page.evaluateOnNewDocument(() => {
+    window.__csp = [];
+    document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(`${e.effectiveDirective} bloqueou ${e.blockedURI}`));
+  });
   await page.setViewport(TELAS[tela]);
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
   // A escolha é gravada só na primeira abertura da aba, para não desfazer o que o teste clicar depois.
@@ -96,18 +111,22 @@ async function congelar(page) {
   await page.evaluate(() => document.fonts.ready);
   await new Promise((r) => setTimeout(r, 300));
 }
-const estado = (page) => page.evaluate((chave) => {
-  const aviso = document.querySelector('.lang-aviso');
-  let guardado = null; try { guardado = localStorage.getItem(chave); } catch (e) {}
-  return {
-    caminho: location.pathname,
-    lang: document.documentElement.lang,
-    h1: document.querySelector('h1') ? document.querySelector('h1').getAttribute('aria-label') : null,
-    aviso: aviso ? { lang: aviso.getAttribute('lang'), texto: aviso.innerText.trim(), link: aviso.querySelector('a').getAttribute('href') } : null,
-    guardado,
-    faltando: window.i18n ? window.i18n.faltando.slice() : [],
-  };
-}, CHAVE_STORE);
+const estado = async (page) => ({
+  ...await page.evaluate((chave) => {
+    const aviso = document.querySelector('.lang-aviso');
+    let guardado = null; try { guardado = localStorage.getItem(chave); } catch (e) {}
+    return {
+      caminho: location.pathname,
+      lang: document.documentElement.lang,
+      h1: document.querySelector('h1') ? document.querySelector('h1').getAttribute('aria-label') : null,
+      aviso: aviso ? { lang: aviso.getAttribute('lang'), texto: aviso.innerText.trim(), link: aviso.querySelector('a').getAttribute('href') } : null,
+      guardado,
+      faltando: window.i18n ? window.i18n.faltando.slice() : [],
+      csp: (window.__csp || []).slice(),
+    };
+  }, CHAVE_STORE),
+  eventosMeta: page.eventosMeta.slice(),
+});
 
 async function fotografar(browser, base, nome, opts) {
   const { page, erros } = await abrir(browser, base + (opts.caminho || '/'), opts);
@@ -146,7 +165,7 @@ async function compararFotos(browser, a, b) {
 async function main() {
   const srv = await servidor();
   const base = `http://127.0.0.1:${srv.address().port}`;
-  const browser = await puppeteer.launch({ executablePath: acharChrome(), headless: true, args: ['--lang=pt-BR'] });
+  const browser = await puppeteer.launch({ executablePath: acharChrome(), headless: true, args: ['--lang=pt-BR', '--disable-blink-features=AutomationControlled'] });
   const problemas = [];
   const confere = (ok, msg) => { if (!ok) problemas.push(msg); };
   try {
@@ -168,6 +187,7 @@ async function main() {
         confere(r.info.lang === idioma && r.info.caminho === caminho, `${idioma} ${tela}: abriu ${r.info.caminho} com <html lang="${r.info.lang}">`);
         confere(!r.info.faltando.length, `${idioma} ${tela}: textos sem tradução na página: ${JSON.stringify(r.info.faltando)}`);
         confere(!r.erros.length, `${idioma} ${tela}: erros no console: ${r.erros.join(' | ')}`);
+        confere(!r.info.csp.length, `${idioma} ${tela}: a CSP bloqueou: ${r.info.csp.join(' | ')}`);
         if (idioma === 'pt-BR') {
           const domAntes = path.join(SAIDA, `antes-dom-${tela}.html`);
           if (fs.existsSync(domAntes)) {
@@ -183,6 +203,64 @@ async function main() {
       confere(r404.info.lang === idioma, `${idioma} 404: <html lang="${r404.info.lang}">`);
       confere(!r404.info.faltando.length, `${idioma} 404: textos sem tradução: ${JSON.stringify(r404.info.faltando)}`);
       confere(!r404.erros.length, `${idioma} 404: erros no console: ${r404.erros.join(' | ')}`);
+    }
+
+    // Pixel da Meta: cada página do site envia um PageView para o pixel da Conexão, sem nada barrado pela CSP.
+    const PIXEL = '1901651080801075';
+    for (const caminho of ['/', '/pt-pt', '/en', '/es', '/privacidade', '/termos']) {
+      const idioma = Object.keys(PAGINAS).find((l) => PAGINAS[l] === caminho) || 'pt-BR';
+      const { page, erros } = await abrir(browser, base + caminho, { idioma });
+      const e = await estado(page);
+      await page.close();
+      const pageViews = e.eventosMeta.filter((u) => u.includes(`id=${PIXEL}`) && u.includes('ev=PageView'));
+      console.log(`pixel ${caminho}: ${pageViews.length} PageView, bloqueios da CSP: ${e.csp.length ? e.csp.join(' | ') : 'nenhum'}`);
+      confere(pageViews.length >= 1, `pixel ${caminho}: nenhum PageView enviado (${JSON.stringify(e.eventosMeta)})`);
+      confere(!e.csp.length, `pixel ${caminho}: a CSP bloqueou: ${e.csp.join(' | ')}`);
+      confere(!erros.length, `pixel ${caminho}: erros: ${erros.join(' | ')}`);
+    }
+
+    // Evento Lead: formulários e cliques no WhatsApp. No teste o WhatsApp não chega a abrir.
+    {
+      const segura = () => {
+        window.open = () => null;
+        window.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('a[href^="https://wa.me/"]')) e.preventDefault(); });
+      };
+      const leads = (page) => page.eventosMeta.filter((u) => /[?&]ev=Lead(&|\s|$)/.test(u))
+        .map((u) => { const m = /cd\[content_name\]=([^&\s]*)/.exec(u) || /cd%5Bcontent_name%5D=([^&\s]*)/.exec(u); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '?'; });
+      const espera = (page) => page.waitForNetworkIdle({ idleTime: 500, timeout: 8000 }).catch(() => {});
+      const passos = [];
+
+      const { page, erros } = await abrir(browser, base + '/', { idioma: 'pt-BR', prepara: segura });
+      passos.push(['ao abrir a página', leads(page)]);
+      await page.click('.cta-top'); await espera(page);
+      passos.push(['clique em "Fale conosco" no cabeçalho', leads(page)]);
+      await page.click('#plans a[href^="https://wa.me/"]'); await espera(page);
+      passos.push(['segundo clique no WhatsApp (plano)', leads(page)]);
+      await page.type('#h-nome', 'Teste'); await page.type('#h-whats', '87999990000'); await page.type('#h-empresa', 'Empresa Teste');
+      await page.click('#heroForm button[type="submit"]'); await espera(page);
+      passos.push(['envio do formulário do topo', leads(page)]);
+      await page.type('#f-nome', 'Teste'); await page.type('#f-whats', '87999990000'); await page.type('#f-empresa', 'Empresa Teste'); await page.select('#f-est', 'Branding');
+      await page.click('#submitBtn'); await espera(page);
+      passos.push(['envio do formulário de contato', leads(page)]);
+      await page.click('#sentWa'); await espera(page);
+      passos.push(['clique em "Abrir o WhatsApp" depois do envio', leads(page)]);
+      await page.close();
+      for (const [passo, l] of passos) console.log(`lead / ${passo}: ${JSON.stringify(l)}`);
+      const esperado = ['WhatsApp - cabecalho', 'Formulário - topo', 'Formulário - contato'];
+      confere(JSON.stringify(passos[passos.length - 1][1]) === JSON.stringify(esperado) && passos[0][1].length === 0, `eventos Lead em /: ${JSON.stringify(passos)}`);
+      confere(!erros.length, `eventos Lead: erros: ${erros.join(' | ')}`);
+
+      // Em outro idioma, a origem é a mesma; e um clique na AlicIA também conta.
+      const outro = await abrir(browser, base + '/es', { idioma: 'es-ES', prepara: segura });
+      await outro.page.click('#aiBtn');
+      await outro.page.evaluate(() => { document.getElementById('aiInput').value = '¿cuánto cuesta?'; document.getElementById('aiForm').requestSubmit(); });
+      await outro.page.waitForSelector('#aiLog .acts-row a.act.solid');
+      await outro.page.click('#aiLog .acts-row a.act.solid'); await espera(outro.page);
+      const lEs = leads(outro.page);
+      await outro.page.close();
+      console.log(`lead /es clique no WhatsApp da AlicIA: ${JSON.stringify(lEs)}`);
+      confere(JSON.stringify(lEs) === JSON.stringify(['WhatsApp - alicia']), `evento Lead em /es (AlicIA): ${JSON.stringify(lEs)}`);
+      confere(!outro.erros.length, `evento Lead em /es: erros: ${outro.erros.join(' | ')}`);
     }
 
     // Primeira visita: a página fica no idioma do endereço e, se o navegador for de outro idioma, aparece o aviso.

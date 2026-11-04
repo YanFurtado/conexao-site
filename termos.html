@@ -48,8 +48,27 @@ a{color:var(--purple)}
 .foot a{color:#B9B2CC;text-decoration:none}.foot a:hover{color:var(--white)}
 :focus-visible{outline:2px solid var(--purple-soft);outline-offset:3px;border-radius:4px}
 </style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1901651080801075');
+fbq('track', 'PageView');
+</script>
+<!-- End Meta Pixel Code -->
+
 </head>
 <body>
+<!-- Meta Pixel Code (para quem navega sem JavaScript) -->
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1901651080801075&ev=PageView&noscript=1"
+/></noscript>
 <header class="top"><div class="wrap">
   <a href="./" aria-label="Voltar para o site da Conexão"><img src="assets/img/conexao-logo-branca.png" alt="Conexão"></a>
   <a class="back" href="./"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Voltar ao site</a>

@@ -1,5 +1,6 @@
 // Servidor local que imita o .htaccess: /en serve en.html, /en/ volta para /en, o que não existe recebe
-// a 404.html e as ferramentas de desenvolvimento ficam bloqueadas.
+// a 404.html, as ferramentas de desenvolvimento ficam bloqueadas e as páginas saem com a mesma
+// Content-Security-Policy do .htaccess (assim o que ela bloquear no site publicado também falha aqui).
 //
 //   npm run servidor                abre em http://localhost:8080
 //   PORTA=3000 npm run servidor     em outra porta
@@ -11,8 +12,18 @@ import { fileURLToPath } from 'node:url';
 const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.ico': 'image/x-icon', '.svg': 'image/svg+xml', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml' };
 const BLOQUEADO = /^\/(node_modules|tests|tools|fotos)(\/|$)|(^|\/)\.(?!well-known\/)|\.(bak|old|orig|log|sql|sh|py|ini|env|md|zip|mjs)$|^\/package(-lock)?\.json$/;
 
+// A CSP do .htaccess, sem o upgrade-insecure-requests (no localhost não há https).
+function lerCsp(raiz) {
+  const arq = path.join(raiz, '.htaccess');
+  if (!fs.existsSync(arq)) return null;
+  const m = /Content-Security-Policy "([^"]+)"/.exec(fs.readFileSync(arq, 'utf8'));
+  return m ? m[1].replace(/;\s*upgrade-insecure-requests/, '') : null;
+}
+
 export function criarServidor(raiz) {
   return http.createServer((req, res) => {
+    const csp = lerCsp(raiz);
+    if (csp) res.setHeader('Content-Security-Policy', csp);
     let p;
     try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (e) { res.writeHead(400); res.end(); return; }
     const barra = /^\/(en|es|pt-pt)\/$/.exec(p);

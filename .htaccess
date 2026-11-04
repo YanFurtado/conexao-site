@@ -49,7 +49,8 @@ ServerSignature Off
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
   Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+  # connect.facebook.net e www.facebook.com: Pixel da Meta (script, envio de eventos e imagem do <noscript>)
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.facebook.com https://connect.facebook.net; connect-src 'self' https://www.facebook.com https://connect.facebook.net; frame-src https://www.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self' https://www.facebook.com; frame-ancestors 'self'; upgrade-insecure-requests"
   Header unset X-Powered-By
 
   # Cache: HTML e JS (inclui as traduções) sempre atualizados; imagens e ícones por 30 dias

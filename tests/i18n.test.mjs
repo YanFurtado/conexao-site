@@ -21,7 +21,7 @@ const PAGINAS_FONTE = ['index.html', '404.html'];
 const FUNCOES = new Set(['t', 'tx', 'i18n.t', 'i18n.tx']);
 // Marcas e nomes próprios: se aparecem no original, precisam continuar na tradução.
 const MARCAS = [
-  'Conexão', 'AlicIA', 'NEX', 'NEX Intelligence', 'Sirify', 'SiriFY', 'Super Estrutura Conexão', '#SuperestruturasCNX',
+  'Conexão', 'AlicIA', 'NEX', 'NEX Intelligence', 'Sirify', 'SiriFY', 'Super Estrutura Conexão', '#SuperEstruturasCNX',
   'Cnx Marketing e Tecnologia', 'M. Leite Empreendimento em Marketing Ltda', 'Galeria Manhattan', 'Petrolina', 'Marcos Leite',
   'WhatsApp', 'Google', 'Google Maps', 'Meta', 'Instagram', 'Itaú', 'Fiolaser', 'Itaipava', 'Bellife', 'Auto Vale',
   'crm.nexintelligence.com.br',

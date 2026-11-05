@@ -5,8 +5,8 @@ i18n.adicionar('en-US', {
   "Assessoria Conexão": "Conexão Consulting",
   "Assessoria consultiva de marketing e tecnologia em Petrolina-PE. O método Super Estrutura Conexão estrutura branding, conversão, comercial, e-commerce e tecnologia da sua empresa.": "Marketing and technology consulting in Petrolina-PE, Brazil. The Super Estrutura Conexão method structures your company's branding, conversion, sales, e-commerce and technology.",
   "Conexão | Assessoria consultiva de marketing e tecnologia": "Conexão | Marketing and technology consulting",
-  "Aumentamos o faturamento da sua empresa com o nosso método #SuperestruturasCNX. Assessoria consultiva de marketing e tecnologia em Petrolina-PE.": "We grow your company's revenue with our #SuperestruturasCNX method. Marketing and technology consulting in Petrolina-PE, Brazil.",
-  "Conexão Assessoria · método #SuperestruturasCNX": "Conexão Consulting · #SuperestruturasCNX method",
+  "Aumentamos o faturamento da sua empresa com o nosso método #SuperEstruturasCNX. Assessoria consultiva de marketing e tecnologia em Petrolina-PE.": "We grow your company's revenue with our #SuperEstruturasCNX method. Marketing and technology consulting in Petrolina-PE, Brazil.",
+  "Conexão Assessoria · método #SuperEstruturasCNX": "Conexão Consulting · #SuperEstruturasCNX method",
   "Conexão Marketing e Tecnologia — início": "Conexão Marketing e Tecnologia — home",
   "Principal": "Main",
   "Clientes": "Clients",
@@ -26,7 +26,7 @@ i18n.adicionar('en-US', {
   "Ver versão do Brasil": "View in English",
   "Fechar aviso": "Close notice",
   "Assessoria consultiva · Petrolina-PE · BR · PT · EUA": "Consulting firm · Petrolina-PE · BR · PT · US",
-  "Aumentamos o faturamento da sua empresa com o nosso método #SuperestruturasCNX": "We grow your company's revenue with our #SuperestruturasCNX method",
+  "Aumentamos o faturamento da sua empresa com o nosso método #SuperEstruturasCNX": "We grow your company's revenue with our #SuperEstruturasCNX method",
   "A Conexão é um ecossistema de marketing e tecnologia que estrutura empresas para vender mais, com diagnóstico, estratégia e execução.": "Conexão is a marketing and technology ecosystem that structures companies to sell more, with diagnosis, strategy and execution.",
   "Nome": "Name",
   "Seu nome": "Your name",
@@ -38,7 +38,7 @@ i18n.adicionar('en-US', {
   "Informe a empresa.": "Enter your company.",
   "Quero aumentar meu faturamento": "I want to grow my revenue",
   "Pronto! Se o WhatsApp não abriu, <a>toque aqui para enviar</a>.": "Done! If WhatsApp didn't open, <a>tap here to send</a>.",
-  "Olá! Quero aumentar o faturamento da minha empresa com o método #SuperestruturasCNX.\n\n*Nome:* {{nome}}\n*WhatsApp:* {{whats}}\n*Empresa:* {{empresa}}\n\n(Enviado pelo site da Conexão)": "Hi! I want to grow my company's revenue with the #SuperestruturasCNX method.\n\n*Name:* {{nome}}\n*WhatsApp:* {{whats}}\n*Company:* {{empresa}}\n\n(Sent from the Conexão website)",
+  "Olá! Quero aumentar o faturamento da minha empresa com o método #SuperEstruturasCNX.\n\n*Nome:* {{nome}}\n*WhatsApp:* {{whats}}\n*Empresa:* {{empresa}}\n\n(Enviado pelo site da Conexão)": "Hi! I want to grow my company's revenue with the #SuperEstruturasCNX method.\n\n*Name:* {{nome}}\n*WhatsApp:* {{whats}}\n*Company:* {{empresa}}\n\n(Sent from the Conexão website)",
 
   /* Números */
   "Números da Conexão": "Conexão in numbers",

@@ -1253,14 +1253,13 @@ i18n.pronto(function(){
   /* ---- Pixel da Meta: evento Lead ao enviar um formulário ou abrir o WhatsApp ----
      content_name diz de onde veio ("WhatsApp - planos", "Formulário - topo") e fica igual em todos os
      idiomas, para os relatórios somarem. Só vai o local do clique; nenhum dado digitado é enviado.
-     Os cliques no WhatsApp contam uma vez por visita à página; "Abrir o WhatsApp" e "toque aqui para
-     enviar", que repetem um formulário já enviado, não contam de novo. */
+     Cada botão de WhatsApp conta uma vez por visita à página (clicar de novo no mesmo botão não repete);
+     "Abrir o WhatsApp" e "toque aqui para enviar", que repetem um formulário já enviado, não contam de novo. */
   function lead(origem){ if (window.fbq) fbq('track', 'Lead', { content_name: origem }); }
-  var leadWhats = false;
   document.addEventListener('click', function(e){
     var a = e.target.closest('a[href^="https://wa.me/"]');
-    if (!a || leadWhats || a.id === 'sentWa' || a.closest('#heroNote')) return;
-    leadWhats = true;
+    if (!a || a.id === 'sentWa' || a.closest('#heroNote') || a.leadContado) return;
+    a.leadContado = true;
     var secao = a.closest('section[id]');
     lead('WhatsApp - ' + (a.closest('#ai') ? 'alicia' : a.closest('header') ? 'cabecalho' : a.closest('.meter') ? 'teste-rapido' : secao ? secao.id : 'pagina'));
   });

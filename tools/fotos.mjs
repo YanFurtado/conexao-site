@@ -234,8 +234,12 @@ async function main() {
       passos.push(['ao abrir a página', leads(page)]);
       await page.click('.cta-top'); await espera(page);
       passos.push(['clique em "Fale conosco" no cabeçalho', leads(page)]);
+      await page.click('.cta-top'); await espera(page);
+      passos.push(['mesmo botão de novo (não repete)', leads(page)]);
       await page.click('#plans a[href^="https://wa.me/"]'); await espera(page);
-      passos.push(['segundo clique no WhatsApp (plano)', leads(page)]);
+      passos.push(['outro botão de WhatsApp (plano)', leads(page)]);
+      await page.click('#contato a.wa[href^="https://wa.me/"]'); await espera(page);
+      passos.push(['"Fale conosco" verde da seção de contato', leads(page)]);
       await page.type('#h-nome', 'Teste'); await page.type('#h-whats', '87999990000'); await page.type('#h-empresa', 'Empresa Teste');
       await page.click('#heroForm button[type="submit"]'); await espera(page);
       passos.push(['envio do formulário do topo', leads(page)]);
@@ -246,7 +250,7 @@ async function main() {
       passos.push(['clique em "Abrir o WhatsApp" depois do envio', leads(page)]);
       await page.close();
       for (const [passo, l] of passos) console.log(`lead / ${passo}: ${JSON.stringify(l)}`);
-      const esperado = ['WhatsApp - cabecalho', 'Formulário - topo', 'Formulário - contato'];
+      const esperado = ['WhatsApp - cabecalho', 'WhatsApp - planos', 'WhatsApp - contato', 'Formulário - topo', 'Formulário - contato'];
       confere(JSON.stringify(passos[passos.length - 1][1]) === JSON.stringify(esperado) && passos[0][1].length === 0, `eventos Lead em /: ${JSON.stringify(passos)}`);
       confere(!erros.length, `eventos Lead: erros: ${erros.join(' | ')}`);
 

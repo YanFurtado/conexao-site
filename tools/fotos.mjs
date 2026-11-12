@@ -205,28 +205,31 @@ async function main() {
       confere(!r404.erros.length, `${idioma} 404: erros no console: ${r404.erros.join(' | ')}`);
     }
 
-    // Pixel da Meta: cada página do site envia um PageView para o pixel da Conexão, sem nada barrado pela CSP.
+    // Pixel da Meta: cada página do site (inclusive a 404) envia um único PageView para o pixel da Conexão,
+    // sem nada barrado pela CSP.
     const PIXEL = '1901651080801075';
-    for (const caminho of ['/', '/pt-pt', '/en', '/es', '/privacidade', '/termos']) {
+    for (const caminho of ['/', '/pt-pt', '/en', '/es', '/privacidade', '/termos', '/pagina-que-nao-existe']) {
       const idioma = Object.keys(PAGINAS).find((l) => PAGINAS[l] === caminho) || 'pt-BR';
       const { page, erros } = await abrir(browser, base + caminho, { idioma });
       const e = await estado(page);
       await page.close();
       const pageViews = e.eventosMeta.filter((u) => u.includes(`id=${PIXEL}`) && u.includes('ev=PageView'));
       console.log(`pixel ${caminho}: ${pageViews.length} PageView, bloqueios da CSP: ${e.csp.length ? e.csp.join(' | ') : 'nenhum'}`);
-      confere(pageViews.length >= 1, `pixel ${caminho}: nenhum PageView enviado (${JSON.stringify(e.eventosMeta)})`);
+      confere(pageViews.length === 1, `pixel ${caminho}: ${pageViews.length} PageView em vez de 1 (${JSON.stringify(e.eventosMeta)})`);
       confere(!e.csp.length, `pixel ${caminho}: a CSP bloqueou: ${e.csp.join(' | ')}`);
       confere(!erros.length, `pixel ${caminho}: erros: ${erros.join(' | ')}`);
     }
 
-    // Evento Lead: formulários e cliques no WhatsApp. No teste o WhatsApp não chega a abrir.
+    // Evento Lead: formulários e cliques no WhatsApp. No teste o WhatsApp (e qualquer link externo) não chega a abrir.
     {
       const segura = () => {
         window.open = () => null;
-        window.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('a[href^="https://wa.me/"]')) e.preventDefault(); });
+        window.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('a[href^="https://"]')) e.preventDefault(); });
       };
-      const leads = (page) => page.eventosMeta.filter((u) => /[?&]ev=Lead(&|\s|$)/.test(u))
+      // content_name de cada envio do evento `nome` (Lead, CliqueExterno, FindLocation, AbriuAlicIA).
+      const eventos = (page, nome) => page.eventosMeta.filter((u) => new RegExp(`[?&]ev=${nome}(&|\\s|$)`).test(u))
         .map((u) => { const m = /cd\[content_name\]=([^&\s]*)/.exec(u) || /cd%5Bcontent_name%5D=([^&\s]*)/.exec(u); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '?'; });
+      const leads = (page) => eventos(page, 'Lead');
       const espera = (page) => page.waitForNetworkIdle({ idleTime: 500, timeout: 8000 }).catch(() => {});
       const passos = [];
 
@@ -265,6 +268,34 @@ async function main() {
       console.log(`lead /es clique no WhatsApp da AlicIA: ${JSON.stringify(lEs)}`);
       confere(JSON.stringify(lEs) === JSON.stringify(['WhatsApp - alicia']), `evento Lead em /es (AlicIA): ${JSON.stringify(lEs)}`);
       confere(!outro.erros.length, `evento Lead em /es: erros: ${outro.erros.join(' | ')}`);
+
+      // Links externos (não são Lead): cada link conta uma vez; e abrir a AlicIA conta uma vez por visita.
+      const clicaNo = (page, sel, i = 0) => page.evaluate((s, n) => document.querySelectorAll(s)[n].click(), sel, i);
+      const ext = await abrir(browser, base + '/', { idioma: 'pt-BR', prepara: segura });
+      const GOOGLE = 'a[href^="https://www.google.com/maps?cid"]';
+      await clicaNo(ext.page, GOOGLE, 0); await clicaNo(ext.page, GOOGLE, 1); await clicaNo(ext.page, GOOGLE, 0);
+      await clicaNo(ext.page, 'a[href^="https://www.google.com/maps/search"]');
+      await clicaNo(ext.page, 'a[href^="https://crm.nexintelligence.com.br"]'); await clicaNo(ext.page, 'a[href^="https://crm.nexintelligence.com.br"]');
+      await clicaNo(ext.page, 'a[href^="https://www.instagram.com/"]');
+      await clicaNo(ext.page, '#aiBtn'); await clicaNo(ext.page, '#aiClose'); await clicaNo(ext.page, '#aiBtn'); await clicaNo(ext.page, '#aiClose'); await clicaNo(ext.page, '#faqAsk');
+      await espera(ext.page);
+      const r = { CliqueExterno: eventos(ext.page, 'CliqueExterno'), FindLocation: eventos(ext.page, 'FindLocation'), AbriuAlicIA: eventos(ext.page, 'AbriuAlicIA'), Lead: leads(ext.page) };
+      await ext.page.close();
+      console.log(`externos / avaliações x2 (+1 repetido), endereço, NEX (2x), Instagram, AlicIA aberta 3x: ${JSON.stringify(r)}`);
+      const rEsperado = { CliqueExterno: ['Google - avaliações', 'Google - avaliações', 'NEX', 'Instagram'], FindLocation: ['Google - endereço'], AbriuAlicIA: ['botão flutuante'], Lead: [] };
+      confere(JSON.stringify(r) === JSON.stringify(rEsperado), `eventos externos/AlicIA em /: ${JSON.stringify(r)}`);
+      confere(!ext.erros.length, `eventos externos em /: erros: ${ext.erros.join(' | ')}`);
+
+      // A origem de quem abre a AlicIA: FAQ (em inglês) e "Perguntar à AlicIA" de um plano (pt-PT).
+      for (const [caminho, idioma, sel, esperadoA] of [['/en', 'en-US', '#faqAsk', 'FAQ'], ['/pt-pt', 'pt-PT', '[data-ask]', 'plano']]) {
+        const pg = await abrir(browser, base + caminho, { idioma, prepara: segura });
+        await clicaNo(pg.page, sel); await espera(pg.page);
+        const a = eventos(pg.page, 'AbriuAlicIA');
+        await pg.page.close();
+        console.log(`AlicIA ${caminho} aberta por ${sel}: ${JSON.stringify(a)}`);
+        confere(JSON.stringify(a) === JSON.stringify([esperadoA]), `AbriuAlicIA em ${caminho}: ${JSON.stringify(a)}`);
+        confere(!pg.erros.length, `AlicIA em ${caminho}: erros: ${pg.erros.join(' | ')}`);
+      }
     }
 
     // Primeira visita: a página fica no idioma do endereço e, se o navegador for de outro idioma, aparece o aviso.

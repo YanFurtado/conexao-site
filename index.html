@@ -1267,6 +1267,25 @@ i18n.pronto(function(){
     lead('WhatsApp - ' + (a.closest('#ai') ? 'alicia' : a.closest('header') ? 'cabecalho' : a.closest('.meter') ? 'teste-rapido' : secao ? secao.id : 'pagina'));
   });
 
+  /* Links externos (não são Lead): o endereço no Google Maps é o evento padrão FindLocation; avaliações no
+     Google, NEX e Instagram são o evento personalizado CliqueExterno. Cada link conta uma vez por visita.
+     Abrir a AlicIA é o evento personalizado AbriuAlicIA (uma vez por visita; veja openAi). */
+  function evento(nome, origem){
+    if (window.fbq) fbq(nome === 'FindLocation' ? 'track' : 'trackCustom', nome, { content_name: origem });
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="https://"]');
+    if (!a || a.cliqueContado) return;
+    var h = a.href;
+    var destino = h.indexOf('https://www.google.com/maps/search') === 0 ? ['FindLocation', 'Google - endereço']
+      : h.indexOf('https://www.google.com/maps') === 0 ? ['CliqueExterno', 'Google - avaliações']
+      : h.indexOf('https://crm.nexintelligence.com.br') === 0 ? ['CliqueExterno', 'NEX']
+      : h.indexOf('https://www.instagram.com/') === 0 ? ['CliqueExterno', 'Instagram'] : null;
+    if (!destino) return;
+    a.cliqueContado = true;
+    evento(destino[0], destino[1]);
+  });
+
   /* ---- menu ---- */
   var menuBtn = document.getElementById('menuBtn'), nav = document.getElementById('nav');
   menuBtn.addEventListener('click', function(){ var o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); menuBtn.setAttribute('aria-label', o ? t('Fechar menu') : t('Abrir menu')); });
@@ -1706,7 +1725,9 @@ i18n.pronto(function(){
     }, delay);
   }
   function aiKey(e){ if (e.key === 'Escape') closeAi(); }
-  function openAi(q, mostrar){
+  var alicIAContada = false;
+  function openAi(q, mostrar, origem){
+    if (origem && !alicIAContada) { alicIAContada = true; evento('AbriuAlicIA', origem); }
     lastFocusAi = document.activeElement;
     ai.hidden = false; aiBtn.setAttribute('aria-expanded','true'); document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', aiKey);
@@ -1714,18 +1735,18 @@ i18n.pronto(function(){
     if (q) ask(q, mostrar); else if (fine) aiInput.focus();
   }
   function closeAi(){ ai.hidden = true; aiBtn.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; document.removeEventListener('keydown', aiKey); if (lastFocusAi && lastFocusAi.focus) lastFocusAi.focus(); }
-  aiBtn.addEventListener('click', function(){ ai.hidden ? openAi() : closeAi(); });
+  aiBtn.addEventListener('click', function(){ ai.hidden ? openAi(null, null, 'botão flutuante') : closeAi(); });
   document.getElementById('aiClose').addEventListener('click', closeAi);
   document.getElementById('aiReset').addEventListener('click', function(){ if (!busy) { renderWelcome(); aiInput.focus(); } });
   ai.addEventListener('click', function(e){ if (e.target === ai) closeAi(); if (e.target.closest('[data-close]')) closeAi(); });
-  document.getElementById('faqAsk').addEventListener('click', function(){ openAi(); });
+  document.getElementById('faqAsk').addEventListener('click', function(){ openAi(null, null, 'FAQ'); });
   aiForm.addEventListener('submit', function(e){ e.preventDefault(); ask(aiInput.value); });
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-ask]'); if (!b) return;
     var est = ESTRUTURAS.filter(function(x){ return x.id === b.getAttribute('data-ask'); })[0];
-    if (est) { var pq = perguntaEst(est); openAi(pq[0], pq[1]); }
+    if (est) { var pq = perguntaEst(est); openAi(pq[0], pq[1], 'plano'); }
   });
-  if (location.hash === '#alicia') openAi();
+  if (location.hash === '#alicia') openAi(null, null, 'link');
 });
 </script>
 

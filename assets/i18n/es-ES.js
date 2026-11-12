@@ -347,7 +347,7 @@ i18n.adicionar('es-ES', {
   "Nossa sede fica na Galeria Manhattan, salas 07 e 12, em Petrolina-PE.": "Nuestra sede está en la Galeria Manhattan, salas 07 y 12, en Petrolina-PE (Brasil).",
   "Atendemos Brasil, Portugal e Estados Unidos": "Atendemos en Brasil, Portugal y Estados Unidos",
   "Reuniões presenciais com hora marcada ou online": "Reuniones presenciales con cita previa u online",
-  "Claro! Nosso time atende pelo WhatsApp +55 87 99130-2323.": "¡Claro! Nuestro equipo atiende por WhatsApp en el +55 87 99130-2323.",
+  "Claro! Nosso time atende pelo WhatsApp +55 87 98857-8910.": "¡Claro! Nuestro equipo atiende por WhatsApp en el +55 87 98857-8910.",
   "A Conexão foi fundada por Marcos Leite e tem mais de 10 anos de mercado, com mais de 300 clientes atendidos.": "Conexão fue fundada por Marcos Leite y tiene más de 10 años en el mercado, con más de 300 clientes atendidos.",
   "Começou criando marcas para negócios locais": "Empezó creando marcas para negocios locales",
   "Virou assessoria com time, processos e tecnologia própria": "Se convirtió en asesoría con equipo, procesos y tecnología propia",

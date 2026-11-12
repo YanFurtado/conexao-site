@@ -1,4 +1,4 @@
-Contact: https://wa.me/5587991302323
+Contact: https://wa.me/5587988578910
 Expires: 2027-10-26T00:00:00.000Z
 Preferred-Languages: pt-BR
 Canonical: https://SEU-DOMINIO.com.br/.well-known/security.txt

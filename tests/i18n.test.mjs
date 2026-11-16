@@ -23,7 +23,7 @@ const FUNCOES = new Set(['t', 'tx', 'i18n.t', 'i18n.tx']);
 const MARCAS = [
   'Conexão', 'AlicIA', 'NEX', 'NEX Intelligence', 'Sirify', 'SiriFY', 'Super Estrutura Conexão', '#SuperEstruturasCNX',
   'Cnx Marketing e Tecnologia', 'M. Leite Empreendimento em Marketing Ltda', 'Galeria Manhattan', 'Petrolina', 'Marcos Leite',
-  'WhatsApp', 'Google', 'Google Maps', 'Meta', 'Instagram', 'Itaú', 'Fiolaser', 'Itaipava', 'Bellife', 'Auto Vale',
+  'WhatsApp', 'Google', 'Google Maps', 'Meta', 'Instagram', 'LinkedIn', 'YouTube', 'TikTok', 'Facebook', 'Itaú', 'Fiolaser', 'Itaipava', 'Bellife', 'Auto Vale',
   'crm.nexintelligence.com.br',
 ];
 

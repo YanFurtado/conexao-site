@@ -296,6 +296,29 @@ async function main() {
         confere(JSON.stringify(a) === JSON.stringify([esperadoA]), `AbriuAlicIA em ${caminho}: ${JSON.stringify(a)}`);
         confere(!pg.erros.length, `AlicIA em ${caminho}: erros: ${pg.erros.join(' | ')}`);
       }
+
+      // Redes sociais: só aparece o card com link de verdade (Instagram); um card provisório (href="#") surge
+      // quando recebe o link e o clique vira CliqueExterno com o nome da rede. Nada vaza para o lado no celular.
+      for (const [caminho, idioma] of [['/', 'pt-BR'], ['/en', 'en-US']]) {
+        const pg = await abrir(browser, base + caminho, { idioma, tela: 'mobile', prepara: segura });
+        const antes = await pg.page.evaluate(() => [...document.querySelectorAll('#redes .soc')].filter((a) => a.offsetParent).map((a) => a.querySelector('b').textContent));
+        const linkedin = await pg.page.evaluate(() => {
+          const a = [...document.querySelectorAll('#redes .soc')].find((x) => x.querySelector('b').textContent === 'LinkedIn');
+          a.setAttribute('href', 'https://www.linkedin.com/company/exemplo/');
+          const r = a.getBoundingClientRect();
+          a.click();
+          return { visivel: !!a.offsetParent, rotulo: a.getAttribute('aria-label'), largura: Math.round(r.width) };
+        });
+        await clicaNo(pg.page, '#redes .soc[href^="https://www.instagram.com/"]'); await espera(pg.page);
+        const vaza = await pg.page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+        const ev = eventos(pg.page, 'CliqueExterno');
+        await pg.page.close();
+        console.log(`redes ${caminho}: visíveis ${JSON.stringify(antes)}, LinkedIn preenchido ${JSON.stringify(linkedin)}, eventos ${JSON.stringify(ev)}, vaza para o lado: ${vaza}`);
+        confere(JSON.stringify(antes) === '["Instagram"]', `redes ${caminho}: cards visíveis ${JSON.stringify(antes)}`);
+        confere(linkedin.visivel && JSON.stringify(ev) === '["LinkedIn","Instagram"]', `redes ${caminho}: ${JSON.stringify({ linkedin, ev })}`);
+        confere(!vaza, `redes ${caminho}: a página vaza para o lado no celular`);
+        confere(!pg.erros.length, `redes ${caminho}: erros: ${pg.erros.join(' | ')}`);
+      }
     }
 
     // Primeira visita: a página fica no idioma do endereço e, se o navegador for de outro idioma, aparece o aviso.

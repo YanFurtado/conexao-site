@@ -369,5 +369,21 @@ i18n.adicionar('pt-PT', {
   /* Página 404 */
   "Página não encontrada · Conexão": "Página não encontrada · Conexão",
   "Esta página não existe ou mudou de endereço.": "Esta página não existe ou mudou de endereço.",
-  "Voltar ao site": "Voltar ao site"
+  "Voltar ao site": "Voltar ao site",
+
+  /* Redes sociais */
+  "Comunidade e conteúdo": "Comunidade e conteúdo",
+  "Fique por dentro de tudo o que <span class=\"hl\">acontece por aqui</span>.": "Fique a par de tudo o que <span class=\"hl\">acontece por cá</span>.",
+  "Siga a Conexão nas redes para receber dicas de marketing e vendas, novidades e os bastidores do nosso dia a dia.": "Siga a Conexão nas redes sociais para receber dicas de marketing e vendas, novidades e os bastidores do nosso dia a dia.",
+  "Seguir a Conexão no Instagram (abre em nova aba)": "Seguir a Conexão no Instagram (abre num novo separador)",
+  "Seguir a Conexão no LinkedIn (abre em nova aba)": "Seguir a Conexão no LinkedIn (abre num novo separador)",
+  "Seguir a Conexão no YouTube (abre em nova aba)": "Seguir a Conexão no YouTube (abre num novo separador)",
+  "Seguir a Conexão no TikTok (abre em nova aba)": "Seguir a Conexão no TikTok (abre num novo separador)",
+  "Seguir a Conexão no Facebook (abre em nova aba)": "Seguir a Conexão no Facebook (abre num novo separador)",
+  "Bastidores, dicas rápidas e resultados de clientes no dia a dia.": "Bastidores, dicas rápidas e resultados de clientes no dia a dia.",
+  "Gestão, mercado e o crescimento das empresas que atendemos.": "Gestão, mercado e o crescimento das empresas que acompanhamos.",
+  "Aulas, cases completos e o método Super Estrutura Conexão explicado.": "Aulas, casos completos e o método Super Estrutura Conexão explicado.",
+  "Dicas curtas de marketing e vendas para aplicar no mesmo dia.": "Dicas curtas de marketing e vendas para aplicar no próprio dia.",
+  "Novidades da Conexão, eventos e conteúdos para a nossa comunidade.": "Novidades da Conexão, eventos e conteúdos para a nossa comunidade.",
+  "Seguir perfil": "Seguir perfil"
 });

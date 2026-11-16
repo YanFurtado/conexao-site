@@ -368,5 +368,21 @@ i18n.adicionar('en-US', {
   /* Página 404 */
   "Página não encontrada · Conexão": "Page not found · Conexão",
   "Esta página não existe ou mudou de endereço.": "This page doesn't exist or has moved.",
-  "Voltar ao site": "Back to the website"
+  "Voltar ao site": "Back to the website",
+
+  /* Redes sociais */
+  "Comunidade e conteúdo": "Community & content",
+  "Fique por dentro de tudo o que <span class=\"hl\">acontece por aqui</span>.": "Keep up with everything <span class=\"hl\">happening here</span>.",
+  "Siga a Conexão nas redes para receber dicas de marketing e vendas, novidades e os bastidores do nosso dia a dia.": "Follow Conexão on social media for marketing and sales tips, news and a behind-the-scenes look at our day-to-day.",
+  "Seguir a Conexão no Instagram (abre em nova aba)": "Follow Conexão on Instagram (opens in a new tab)",
+  "Seguir a Conexão no LinkedIn (abre em nova aba)": "Follow Conexão on LinkedIn (opens in a new tab)",
+  "Seguir a Conexão no YouTube (abre em nova aba)": "Follow Conexão on YouTube (opens in a new tab)",
+  "Seguir a Conexão no TikTok (abre em nova aba)": "Follow Conexão on TikTok (opens in a new tab)",
+  "Seguir a Conexão no Facebook (abre em nova aba)": "Follow Conexão on Facebook (opens in a new tab)",
+  "Bastidores, dicas rápidas e resultados de clientes no dia a dia.": "Behind the scenes, quick tips and client results, every day.",
+  "Gestão, mercado e o crescimento das empresas que atendemos.": "Management, market insights and the growth of the companies we work with.",
+  "Aulas, cases completos e o método Super Estrutura Conexão explicado.": "Lessons, full case studies and the Super Estrutura Conexão method explained.",
+  "Dicas curtas de marketing e vendas para aplicar no mesmo dia.": "Short marketing and sales tips you can put to use the same day.",
+  "Novidades da Conexão, eventos e conteúdos para a nossa comunidade.": "Conexão news, events and content for our community.",
+  "Seguir perfil": "Follow"
 });

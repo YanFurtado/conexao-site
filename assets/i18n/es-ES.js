@@ -368,5 +368,21 @@ i18n.adicionar('es-ES', {
   /* Página 404 */
   "Página não encontrada · Conexão": "Página no encontrada · Conexão",
   "Esta página não existe ou mudou de endereço.": "Esta página no existe o ha cambiado de dirección.",
-  "Voltar ao site": "Volver al sitio web"
+  "Voltar ao site": "Volver al sitio web",
+
+  /* Redes sociais */
+  "Comunidade e conteúdo": "Comunidad y contenido",
+  "Fique por dentro de tudo o que <span class=\"hl\">acontece por aqui</span>.": "Entérate de todo lo que <span class=\"hl\">pasa por aquí</span>.",
+  "Siga a Conexão nas redes para receber dicas de marketing e vendas, novidades e os bastidores do nosso dia a dia.": "Sigue a Conexão en redes sociales para recibir consejos de marketing y ventas, novedades y lo que pasa detrás de escena en nuestro día a día.",
+  "Seguir a Conexão no Instagram (abre em nova aba)": "Seguir a Conexão en Instagram (se abre en una pestaña nueva)",
+  "Seguir a Conexão no LinkedIn (abre em nova aba)": "Seguir a Conexão en LinkedIn (se abre en una pestaña nueva)",
+  "Seguir a Conexão no YouTube (abre em nova aba)": "Seguir a Conexão en YouTube (se abre en una pestaña nueva)",
+  "Seguir a Conexão no TikTok (abre em nova aba)": "Seguir a Conexão en TikTok (se abre en una pestaña nueva)",
+  "Seguir a Conexão no Facebook (abre em nova aba)": "Seguir a Conexão en Facebook (se abre en una pestaña nueva)",
+  "Bastidores, dicas rápidas e resultados de clientes no dia a dia.": "Detrás de escena, consejos rápidos y resultados de clientes en el día a día.",
+  "Gestão, mercado e o crescimento das empresas que atendemos.": "Gestión, mercado y el crecimiento de las empresas que atendemos.",
+  "Aulas, cases completos e o método Super Estrutura Conexão explicado.": "Clases, casos completos y el método Super Estrutura Conexão explicado.",
+  "Dicas curtas de marketing e vendas para aplicar no mesmo dia.": "Consejos cortos de marketing y ventas para aplicar el mismo día.",
+  "Novidades da Conexão, eventos e conteúdos para a nossa comunidade.": "Novedades de Conexão, eventos y contenidos para nuestra comunidad.",
+  "Seguir perfil": "Seguir perfil"
 });
